@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Loan Payment Calculator</title>
+<meta name="description" content="Calculate loan payments easily.">
+</head>
+<body>
+
+<h1>Loan Calculator</h1>
+
+<label>Loan Amount:</label>
+<input id="amount"><br><br>
+
+<label>Interest Rate (% yearly):</label>
+<input id="rate"><br><br>
+
+<label>Years:</label>
+<input id="years"><br><br>
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="result"></h2>
+
+<script>
+function calc(){
+let P = parseFloat(document.getElementById("amount").value);
+let r = parseFloat(document.getElementById("rate").value)/100/12;
+let n = parseFloat(document.getElementById("years").value)*12;
+
+let payment = (P*r)/(1-Math.pow(1+r,-n));
+
+document.getElementById("result").innerHTML =
+"Monthly Payment: $" + payment.toFixed(2);
+}
+</script>
+
+</body>
+</html>
