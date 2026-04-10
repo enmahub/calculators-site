@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Currency Converter (USD to EUR)</h1>
+
+<input id="usd" placeholder="USD">
+<button onclick="calc()">Convert</button>
+
+<h2 id="r"></h2>
+
+<script>
+function calc(){
+let rate = 0.92; // static example rate
+r.innerHTML = (usd.value * rate).toFixed(2) + " EUR";
+}
+</script>
+</body>
+</html>
