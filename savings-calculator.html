@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Savings Calculator</h1>
+
+<input id="m" placeholder="Monthly saving">
+<input id="y" placeholder="Years">
+
+<button onclick="calc()">Calculate</button>
+<h2 id="r"></h2>
+
+<script>
+function calc(){
+let total=m.value*12*y.value;
+r.innerHTML="Total: $"+total;
+}
+</script>
+</body>
+</html>
