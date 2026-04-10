@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Age Calculator</title>
+<meta name="description" content="Calculate your exact age instantly.">
+</head>
+<body>
+
+<h1>Age Calculator</h1>
+
+<input type="date" id="birth"><br><br>
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="result"></h2>
+
+<script>
+function calc(){
+let birth = new Date(document.getElementById("birth").value);
+let today = new Date();
+
+let age = today.getFullYear() - birth.getFullYear();
+let m = today.getMonth() - birth.getMonth();
+
+if(m < 0 || (m === 0 && today.getDate() < birth.getDate())){
+age--;
+}
+
+document.getElementById("result").innerHTML = "Age: " + age;
+}
+</script>
+
+</body>
+</html>
