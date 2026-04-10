@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Percentage Calculator</title>
+<meta name="description" content="Calculate percentages quickly.">
+</head>
+<body>
+
+<h1>Percentage Calculator</h1>
+
+<label>Value:</label>
+<input id="value"><br><br>
+
+<label>Percentage (%):</label>
+<input id="percent"><br><br>
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="result"></h2>
+
+<script>
+function calc(){
+let v = document.getElementById("value").value;
+let p = document.getElementById("percent").value;
+
+let result = v * (p/100);
+
+document.getElementById("result").innerHTML = result;
+}
+</script>
+
+</body>
+</html>
