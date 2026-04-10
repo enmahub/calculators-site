@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hours to Minutes Calculator</title>
+<meta name="description" content="Convert hours into minutes instantly.">
+</head>
+<body>
+
+<h1>Hours to Minutes</h1>
+
+<input id="hours"><br><br>
+
+<button onclick="calc()">Convert</button>
+
+<h2 id="result"></h2>
+
+<script>
+function calc(){
+let h = document.getElementById("hours").value;
+let m = h * 60;
+
+document.getElementById("result").innerHTML = m + " minutes";
+}
+</script>
+
+</body>
+</html>
