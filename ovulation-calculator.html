@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="top">Free Online Calculators</div>
+<div class="wrap">
+<div class="card">
 <h1>Ovulation Calculator</h1>
 
 <input type="date" id="last">
@@ -15,7 +18,7 @@
 
 <button onclick="calc()">Calculate</button>
 
-<h2 id="r"></h2>
+<h2 class="result" id="r"></h2>
 
 <script>
 function calc(){
@@ -34,7 +37,8 @@ r.innerHTML = "Estimated ovulation: " + d.toDateString();
 <li><a href="ovulation-calculator.html">Ovulation Calculator</a></li>
 <li><a href="macros-calculator.html">Macros Calculator</a></li>
 </ul>
-
+</div>
+<div class="footer">
 <p>Browse Categories:</p>
 <a href="financial-calculators.html">Financial</a> |
 <a href="health-calculators.html">Health</a> |
@@ -42,6 +46,7 @@ r.innerHTML = "Estimated ovulation: " + d.toDateString();
 <a href="career-calculators.html">Career</a>
 
 <p><a href="index.html">Home</a></p>
-
+</div>
+</div>
 </body>
 </html>

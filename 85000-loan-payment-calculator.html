@@ -8,8 +8,11 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="top">Free Online Calculators</div>
+<div class="wrap">
+<div class="card">
 <h1>$85,000 Loan Payment Calculator</h1>
-<p>Estimate monthly payment for a $85,000 loan amount using simple amortization.</p>
+<p class="desc">Estimate monthly payment for a $85,000 loan amount using simple amortization.</p>
 
 <label>Loan Amount ($):</label>
 <input type="number" id="amount" value="85000"><br><br>
@@ -19,7 +22,7 @@
 <input type="number" id="years" value="5"><br><br>
 
 <button onclick="calcPayment()">Calculate Payment</button>
-<h2 id="result"></h2>
+<h2 id="result" class="result"></h2>
 
 <script>
 function calcPayment() {
@@ -89,12 +92,15 @@ function calcPayment() {
 <li><a href="205000-loan-payment-calculator.html">$205,000 Loan Payment Calculator</a></li>
 </ul>
 </details>
-<hr>
+</div>
+<div class="footer">
 <p>Browse Categories:</p>
 <a href="financial-calculators.html">Financial</a> |
 <a href="health-calculators.html">Health</a> |
 <a href="conversion-calculators.html">Conversions</a> |
 <a href="career-calculators.html">Career</a>
 <p><a href="index.html">Home</a></p>
+</div>
+</div>
 </body>
 </html>

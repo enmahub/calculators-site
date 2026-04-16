@@ -115,14 +115,20 @@ function htmlShell({ title, description, body, lang = "en" }) {
 ${robots}<link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="top">Free Online Calculators</div>
+<div class="wrap">
+<div class="card">
 ${body}
-<hr>
+</div>
+<div class="footer">
 <p>Browse Categories:</p>
 <a href="financial-calculators.html">Financial</a> |
 <a href="health-calculators.html">Health</a> |
 <a href="conversion-calculators.html">Conversions</a> |
 <a href="career-calculators.html">Career</a>
 <p><a href="index.html">Home</a></p>
+</div>
+</div>
 </body>
 </html>
 `;
@@ -277,7 +283,7 @@ function currencyTemplate(entry, entries) {
     title: entry.title,
     description: entry.description,
     body: `<h1>${entry.h1}</h1>
-<p>Convert ${entry.fromName} (${entry.fromCode}) to ${entry.toName} (${entry.toCode}) using a manual exchange rate.</p>
+<p class="desc">Convert ${entry.fromName} (${entry.fromCode}) to ${entry.toName} (${entry.toCode}) using a manual exchange rate.</p>
 
 <label>${entry.fromCode} Amount:</label>
 <input type="number" id="amount" value="100"><br><br>
@@ -285,7 +291,7 @@ function currencyTemplate(entry, entries) {
 <input type="number" id="rate" value="1.00" step="0.0001"><br><br>
 
 <button onclick="convert()">Convert</button>
-<h2 id="result"></h2>
+<h2 id="result" class="result"></h2>
 
 <script>
 function convert() {
@@ -304,7 +310,7 @@ function loanTemplate(entry, entries) {
     title: entry.title,
     description: entry.description,
     body: `<h1>${entry.h1}</h1>
-<p>Estimate monthly payment for a $${formatAmount(
+<p class="desc">Estimate monthly payment for a $${formatAmount(
       entry.amount
     )} loan amount using simple amortization.</p>
 
@@ -316,7 +322,7 @@ function loanTemplate(entry, entries) {
 <input type="number" id="years" value="5"><br><br>
 
 <button onclick="calcPayment()">Calculate Payment</button>
-<h2 id="result"></h2>
+<h2 id="result" class="result"></h2>
 
 <script>
 function calcPayment() {
@@ -347,7 +353,7 @@ function salaryTemplate(entry, entries) {
     title: entry.title,
     description: entry.description,
     body: `<h1>${entry.h1}</h1>
-<p>Convert a $${formatAmount(entry.amount)} yearly salary into hourly pay.</p>
+<p class="desc">Convert a $${formatAmount(entry.amount)} yearly salary into hourly pay.</p>
 
 <label>Annual Salary ($):</label>
 <input type="number" id="salary" value="${entry.amount}"><br><br>
@@ -357,7 +363,7 @@ function salaryTemplate(entry, entries) {
 <input type="number" id="weeks" value="52"><br><br>
 
 <button onclick="calcHourly()">Calculate Hourly</button>
-<h2 id="result"></h2>
+<h2 id="result" class="result"></h2>
 
 <script>
 function calcHourly() {
@@ -576,14 +582,20 @@ function writeGeneratedIndex(entries) {
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="index.html">
 <meta http-equiv="refresh" content="0; url=index.html">
+<link rel="stylesheet" href="styles.css">
 <!-- Generated from pages.config.json -->
 </head>
 <body>
+<div class="top">Free Online Calculators</div>
+<div class="wrap">
+<div class="card">
 <h1>Generated Calculators Index</h1>
-<p>This page moved to <a href="index.html">Home</a>.</p>
+<p class="desc">This page moved to <a href="index.html">Home</a>.</p>
 <script>
 window.location.replace("index.html");
 </script>
+</div>
+</div>
 </body>
 </html>
 `;
@@ -624,8 +636,11 @@ function writeHomeIndex(entries) {
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="top">Free Online Calculators</div>
+<div class="wrap">
+<div class="card">
 <h1>Free Online Calculators</h1>
-<p>Browse calculators by category.</p>
+<p class="desc">Browse calculators by category.</p>
 <!-- Home index generated from pages.config.json -->
 <h2>Categories</h2>
 <ul>
@@ -635,12 +650,15 @@ function writeHomeIndex(entries) {
 <li><a href="career-calculators.html">Career Calculators</a></li>
 </ul>
 ${sections}
-<hr>
+</div>
+<div class="footer">
 <p>Browse Categories:</p>
 <a href="financial-calculators.html">Financial</a> |
 <a href="health-calculators.html">Health</a> |
 <a href="conversion-calculators.html">Conversions</a> |
 <a href="career-calculators.html">Career</a>
+</div>
+</div>
 </body>
 </html>
 `;
