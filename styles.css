@@ -149,6 +149,28 @@ button:hover{
   margin:10px 0;
 }
 
+.faq-block{
+  margin-top:18px;
+  padding:16px;
+  border:1px solid #d9e2ec;
+  border-radius:12px;
+  background:#fff;
+}
+
+.faq-block h2{
+  margin-top:0;
+}
+
+.faq-block details{
+  margin-top:10px;
+  background:#f8fafc;
+}
+
+.faq-block p{
+  margin:10px 0 0;
+  color:#475467;
+}
+
 .small{
   font-size:13px;
   color:#475467;

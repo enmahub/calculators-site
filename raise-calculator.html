@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Raise Calculator (Free) - Estimate New Salary and Monthly Gain</title>
+<meta name="description" content="Calculate new salary after a raise and estimate monthly pay increase.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://enmahub.github.io/practical-calculators/raise-calculator.html">
+<link rel="stylesheet" href="styles.css">
+<script src="site-analytics.js" data-analytics-page defer></script>
+</head>
+<body>
+<div class="top">
+<div class="wrap top-inner">
+<a class="brand" href="index.html">Practical Calculators</a>
+</div>
+</div>
+<div class="wrap">
+<div class="card">
+<h1>Raise Calculator</h1>
+<p class="desc">Estimate annual and monthly impact of a percentage raise.</p>
+<label for="salary">Current annual salary</label>
+<input id="salary" type="number" step="any" placeholder="72000">
+<label for="raise">Raise (%)</label>
+<input id="raise" type="number" step="any" placeholder="4.5">
+<button onclick="calc()">Calculate</button>
+<h2 class="result" id="result">Result: -</h2>
+<script>
+function calc(){
+  const salary = parseFloat(document.getElementById('salary').value);
+  const raisePct = parseFloat(document.getElementById('raise').value);
+  if (!Number.isFinite(salary) || !Number.isFinite(raisePct) || salary < 0) {
+    document.getElementById('result').innerHTML = 'Enter valid values.';
+    return;
+  }
+  const newSalary = salary * (1 + raisePct / 100);
+  const annualGain = newSalary - salary;
+  document.getElementById('result').innerHTML = 'New salary: $' + newSalary.toFixed(2) + '<br>Annual gain: $' + annualGain.toFixed(2) + '<br>Monthly gain: $' + (annualGain / 12).toFixed(2);
+}
+</script>
+<div class="trust-block">
+<h2>How this result is estimated</h2>
+<p class="desc">This salary growth calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<ul>
+<li>Inputs are user-provided and may include rounding.</li>
+<li>Results are informational and not financial, tax, legal, or medical advice.</li>
+<li>For high-impact decisions, confirm with a licensed professional.</li>
+</ul>
+<p class="small">Last reviewed: 2026-04-17</p>
+</div>
+<div class="faq-block">
+<h2>Frequently asked questions</h2>
+<details>
+<summary>Is this calculator result exact?</summary>
+<p>It is an estimate based on your inputs and may differ from official or provider-specific calculations.</p>
+</details>
+<details>
+<summary>Can I rely on this for final financial decisions?</summary>
+<p>Use it for planning and verify important numbers with official sources or licensed professionals.</p>
+</details>
+</div>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this calculator result exact?","acceptedAnswer":{"@type":"Answer","text":"It is an estimate based on your inputs and may differ from official or provider-specific calculations."}},{"@type":"Question","name":"Can I rely on this for final financial decisions?","acceptedAnswer":{"@type":"Answer","text":"Use it for planning and verify important numbers with official sources or licensed professionals."}}]}</script>
+<p><a href="index.html">Home</a> | <a href="career-calculators.html">Category Hub</a></p>
+<h2>Related Calculators</h2>
+<ul>
+<li><a href="gpa-calculator.html">GPA Calculator</a></li>
+<li><a href="salary-calculator.html">Hourly to Salary Calculator</a></li>
+<li><a href="commission-calculator.html">Commission Calculator</a></li>
+<li><a href="overtime-pay-calculator.html">Overtime Pay Calculator</a></li>
+<li><a href="biweekly-to-annual-salary-calculator.html">Biweekly to Annual Salary Calculator</a></li>
+<li><a href="take-home-paycheck-calculator.html">Take-Home Paycheck Calculator</a></li>
+</ul>
+
+</div>
+<div class="footer">
+<p>Browse Categories</p>
+<div class="category-grid">
+<a class="category-link" href="financial-calculators.html">Financial</a>
+<a class="category-link" href="health-calculators.html">Health</a>
+<a class="category-link" href="conversion-calculators.html">Conversions</a>
+<a class="category-link" href="career-calculators.html">Career</a>
+</div>
+<p><a class="home-link" href="index.html">Home</a></p>
+<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>
+</div>
+</div>
+</body>
+</html>

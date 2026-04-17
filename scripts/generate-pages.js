@@ -107,7 +107,8 @@ const LOCALE_LABELS = {
     trustItem1: "Inputs are user-provided and may include rounding.",
     trustItem2: "Results are informational and not financial, tax, legal, or medical advice.",
     trustItem3: "For high-impact decisions, confirm with a licensed professional.",
-    trustReviewed: "Last reviewed"
+    trustReviewed: "Last reviewed",
+    faqTitle: "Frequently asked questions"
   },
   es: {
     browseCategories: "Explorar categorías",
@@ -129,7 +130,8 @@ const LOCALE_LABELS = {
     trustItem1: "Los valores mostrados pueden incluir redondeos y son solo informativos.",
     trustItem2: "Para decisiones relevantes, verifique la información o consulte a un profesional.",
     trustItem3: "",
-    trustReviewed: "Última revisión"
+    trustReviewed: "Última revisión",
+    faqTitle: "Preguntas frecuentes"
   }
 };
 
@@ -495,6 +497,149 @@ ${trustItems}
 </div>`;
 }
 
+function faqItemsForEntry(entry) {
+  const locale = localeCode(entry.lang);
+  if (locale === "es") {
+    return [
+      {
+        question: "¿Este resultado es exacto?",
+        answer: "El resultado es una estimación basada en los datos ingresados y puede variar por redondeos o supuestos."
+      },
+      {
+        question: "¿Qué hago si necesito más precisión?",
+        answer: "Verifica la información con fuentes oficiales o solicita asesoría profesional para decisiones importantes."
+      },
+      {
+        question: "¿Se guardan mis datos?",
+        answer: "Los cálculos se hacen en tu navegador y no requieren crear una cuenta."
+      }
+    ];
+  }
+
+  if (entry.family === "currencyConverter") {
+    return [
+      {
+        question: "Where do exchange rates come from?",
+        answer: "Rates are fetched from a public exchange-rate source and displayed for quick informational conversion."
+      },
+      {
+        question: "Why can bank conversion totals differ?",
+        answer: "Banks and card networks may apply spreads, transfer fees, and timing differences not included here."
+      },
+      {
+        question: "What happens if live rates fail to load?",
+        answer: "The calculator shows a fallback message so you can retry or check rates later."
+      }
+    ];
+  }
+
+  if (entry.family === "loanPaymentByAmount") {
+    return [
+      {
+        question: "Does this include taxes or insurance?",
+        answer: "No. This estimate is based on principal, interest rate, and term only."
+      },
+      {
+        question: "What interest model is used?",
+        answer: "The calculator uses a standard fixed-rate amortization formula."
+      },
+      {
+        question: "Is this good enough for final loan decisions?",
+        answer: "Use it for planning only and confirm terms directly with your lender."
+      }
+    ];
+  }
+
+  if (entry.family === "salaryToHourlyByAmount") {
+    return [
+      {
+        question: "How is hourly pay estimated?",
+        answer: "Hourly pay is annual salary divided by hours per week and weeks worked per year."
+      },
+      {
+        question: "Does this include taxes or deductions?",
+        answer: "No. This is a gross-pay estimate before taxes and payroll deductions."
+      },
+      {
+        question: "Can I change assumptions?",
+        answer: "Yes. Adjust hours and weeks to match your schedule."
+      }
+    ];
+  }
+
+  if (entry.family === "statePaycheckPilotPage") {
+    return [
+      {
+        question: "How is federal tax estimated?",
+        answer: "Federal tax uses progressive IRS-style brackets and standard deduction assumptions by filing status."
+      },
+      {
+        question: "Does this include every local tax rule?",
+        answer: "No. Local taxes, pre-tax benefits, and special cases may change take-home pay."
+      },
+      {
+        question: "Can I use this as my exact paycheck amount?",
+        answer: "Use it as a planning estimate and compare with your payroll provider for exact numbers."
+      }
+    ];
+  }
+
+  return [
+    {
+      question: "Is this calculator result exact?",
+      answer: "It is an estimate based on your inputs and may differ from official or provider-specific calculations."
+    },
+    {
+      question: "Can I rely on this for final financial decisions?",
+      answer: "Use it for planning and verify important numbers with official sources or licensed professionals."
+    }
+  ];
+}
+
+function faqSectionHtml(items, lang = "en") {
+  const rows = Array.isArray(items)
+    ? items.filter((item) => item && item.question && item.answer)
+    : [];
+  if (!rows.length) {
+    return "";
+  }
+  const labels = LOCALE_LABELS[localeCode(lang)];
+  const detailItems = rows
+    .map(
+      (item) => `<details>
+<summary>${escapeHtml(item.question)}</summary>
+<p>${escapeHtml(item.answer)}</p>
+</details>`
+    )
+    .join("\n");
+  return `<div class="faq-block">
+<h2>${labels.faqTitle}</h2>
+${detailItems}
+</div>`;
+}
+
+function faqSchemaHtml(items) {
+  const rows = Array.isArray(items)
+    ? items.filter((item) => item && item.question && item.answer)
+    : [];
+  if (!rows.length) {
+    return "";
+  }
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: rows.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer
+      }
+    }))
+  };
+  return `<script type="application/ld+json">${JSON.stringify(schema)}</script>`;
+}
+
 function shouldIndexCurrencyPair(fromCode, toCode) {
   const core = new Set((config.qualityRules?.currencyIndexCore || []).map((item) => String(item).toUpperCase()));
   return core.has(fromCode) || core.has(toCode);
@@ -693,6 +838,7 @@ ${expandedBlock}`;
 }
 
 function currencyTemplate(entry, entries) {
+  const faqItems = faqItemsForEntry(entry);
   const currencyScriptHref = toHref(entry.pagePath, "currency-rates.js");
   return htmlShell({
     title: entry.title,
@@ -714,11 +860,14 @@ function currencyTemplate(entry, entries) {
 
 <script src="${currencyScriptHref}" data-currency-page data-from="${entry.fromCode}" data-to="${entry.toCode}" data-amount-id="amount" data-rate-id="rate" data-result-id="result" defer></script>
 ${trustBlockHtml("currency converter", entry.lang)}
+${faqSectionHtml(faqItems, entry.lang)}
+${faqSchemaHtml(faqItems)}
 ${relatedHtml(entries, entry)}`
   });
 }
 
 function loanTemplate(entry, entries) {
+  const faqItems = faqItemsForEntry(entry);
   return htmlShell({
     title: entry.title,
     description: entry.description,
@@ -764,11 +913,14 @@ function calcPayment() {
 }
 </script>
 ${trustBlockHtml("loan calculator", entry.lang)}
+${faqSectionHtml(faqItems, entry.lang)}
+${faqSchemaHtml(faqItems)}
 ${relatedHtml(entries, entry)}`
   });
 }
 
 function salaryTemplate(entry, entries) {
+  const faqItems = faqItemsForEntry(entry);
   return htmlShell({
     title: entry.title,
     description: entry.description,
@@ -805,6 +957,8 @@ function calcHourly() {
 }
 </script>
 ${trustBlockHtml("salary calculator", entry.lang)}
+${faqSectionHtml(faqItems, entry.lang)}
+${faqSchemaHtml(faqItems)}
 ${relatedHtml(entries, entry)}`
   });
 }
@@ -1024,6 +1178,7 @@ function calcular() {
 }
 
 function spanishPilotTemplate(entry, entries) {
+  const faqItems = faqItemsForEntry(entry);
   return htmlShell({
     title: entry.title,
     description: entry.description,
@@ -1035,11 +1190,14 @@ function spanishPilotTemplate(entry, entries) {
 <p class="desc">${entry.intro}</p>
 ${spanishFormulaScript(entry.formulaType)}
 ${trustBlockHtml("calculadora", "es")}
+${faqSectionHtml(faqItems, "es")}
+${faqSchemaHtml(faqItems)}
 ${relatedHtml(entries, entry)}`
   });
 }
 
 function statePaycheckTemplate(entry, entries) {
+  const faqItems = faqItemsForEntry(entry);
   return htmlShell({
     title: entry.title,
     description: entry.description,
@@ -1148,11 +1306,14 @@ function calcPaycheck() {
 }
 </script>
 ${trustBlockHtml("paycheck calculator", entry.lang)}
+${faqSectionHtml(faqItems, entry.lang)}
+${faqSchemaHtml(faqItems)}
 ${relatedHtml(entries, entry)}`
   });
 }
 
 function legacyStaticTemplate(entry, entries) {
+  const faqItems = faqItemsForEntry(entry);
   let normalizedBody = String(entry.body || "");
   normalizedBody = normalizedBody.replace(/<p>\s*Related Calculators:\s*<\/p>/gi, "<h2>Related Calculators</h2>");
   normalizedBody = normalizedBody.replace(/<input([^>]*?)class="([^"]*?)"([^>]*?)>/gi, (full, before, classes, after) => {
@@ -1177,6 +1338,8 @@ function legacyStaticTemplate(entry, entries) {
     canonicalPath: entry.pagePath || entry.fileName,
     body: `${normalizedBody}
 ${trustBlockHtml(entry.trustTopic || "calculator", entry.lang || "en")}
+${faqSectionHtml(faqItems, entry.lang || "en")}
+${faqSchemaHtml(faqItems)}
 ${relatedSection}`
   });
 }
