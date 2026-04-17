@@ -120,12 +120,11 @@ const LOCALE_LABELS = {
     relatedTitle: "Calculadoras relacionadas",
     moreRelated: "Más calculadoras relacionadas",
     categoryHub: "Índice de categoría",
-    trustTitle: "Como se estima este resultado",
-    trustDescription:
-      "Esta {topic} ofrece resultados estimados según los datos ingresados. Revisa los criterios de cálculo y verifica decisiones importantes por separado.",
-    trustItem1: "Los datos los ingresa el usuario y los resultados pueden incluir redondeos.",
-    trustItem2: "Los resultados son informativos y no constituyen asesoría financiera, fiscal, legal ni médica.",
-    trustItem3: "Para decisiones de alto impacto, consulta a un profesional autorizado.",
+    trustTitle: "Información sobre este cálculo",
+    trustDescription: "El resultado se genera con los datos ingresados por el usuario.",
+    trustItem1: "Los valores mostrados pueden incluir redondeos y son solo informativos.",
+    trustItem2: "Para decisiones relevantes, verifique la información o consulte a un profesional.",
+    trustItem3: "",
     trustReviewed: "Última revisión"
   }
 };
@@ -358,13 +357,15 @@ function trustBlockHtml(topic = "calculator", lang = "en") {
   const locale = localeCode(lang);
   const labels = LOCALE_LABELS[locale];
   const description = labels.trustDescription.replace("{topic}", escapeHtml(topic));
+  const trustItems = [labels.trustItem1, labels.trustItem2, labels.trustItem3]
+    .filter((item) => String(item || "").trim().length > 0)
+    .map((item) => `<li>${item}</li>`)
+    .join("\n");
   return `<div class="trust-block">
 <h2>${labels.trustTitle}</h2>
 <p class="desc">${description}</p>
 <ul>
-<li>${labels.trustItem1}</li>
-<li>${labels.trustItem2}</li>
-<li>${labels.trustItem3}</li>
+${trustItems}
 </ul>
 <p class="small">${labels.trustReviewed}: ${escapeHtml(trustUpdatedDate)}</p>
 </div>`;
@@ -1524,6 +1525,68 @@ ${Array.from(urls)
   fs.writeFileSync(path.join(root, "sitemap.xml"), content, "utf8");
 }
 
+function shouldUpgradeLegacyPage(fileName, content, generatedPaths) {
+  const normalized = normalizePath(fileName);
+  if (generatedPaths.has(normalized)) {
+    return false;
+  }
+  const skipFiles = new Set([
+    "index.html",
+    "generated-calculators.html",
+    "financial-calculators.html",
+    "conversion-calculators.html",
+    "career-calculators.html",
+    "health-calculators.html",
+    "about.html",
+    "contact.html",
+    "privacy.html",
+    "terms.html",
+    "google00989570bfb5b7e8.html"
+  ]);
+  if (skipFiles.has(normalized)) {
+    return false;
+  }
+  if (!/<html[^>]*lang=["']en["']/i.test(content)) {
+    return false;
+  }
+  if (!/<button\b/i.test(content)) {
+    return false;
+  }
+  if (content.includes('class="trust-block"')) {
+    return false;
+  }
+  return true;
+}
+
+function upgradeLegacyEnglishPages(entries) {
+  const generatedPaths = new Set(
+    entries.map((entry) => normalizePath(entry.pagePath || entry.fileName))
+  );
+  const htmlFiles = fs.readdirSync(root).filter((name) => name.endsWith(".html"));
+  let updated = 0;
+  for (const fileName of htmlFiles) {
+    const filePath = path.join(root, fileName);
+    const content = fs.readFileSync(filePath, "utf8");
+    if (!shouldUpgradeLegacyPage(fileName, content, generatedPaths)) {
+      continue;
+    }
+    const trustHtml = trustBlockHtml("calculator", "en");
+    let next = content;
+    if (/<div class="footer">/i.test(next)) {
+      next = next.replace(/<div class="footer">/i, `${trustHtml}\n<div class="footer">`);
+    } else if (/<\/div>\s*<\/body>/i.test(next)) {
+      next = next.replace(/<\/div>\s*<\/body>/i, `${trustHtml}\n</div>\n</body>`);
+    } else if (/<\/body>/i.test(next)) {
+      next = next.replace(/<\/body>/i, `${trustHtml}\n</body>`);
+    } else {
+      continue;
+    }
+    fs.writeFileSync(filePath, next, "utf8");
+    updated += 1;
+  }
+  return updated;
+}
+
 function main() {
   const overwrite = process.argv.includes("--overwrite");
   const entries = buildEntries();
@@ -1548,11 +1611,13 @@ function main() {
   writeHomeIndex(entries);
   writeMarketPilotIndexes(entries);
   writeGeneratedIndex(entries);
+  const upgradedLegacyCount = upgradeLegacyEnglishPages(entries);
   writeSitemap(entries);
 
   console.log(`Generated entries configured: ${entries.length}`);
   console.log(`Pages created/updated: ${created}`);
   console.log(`Pages skipped (existing): ${skipped}`);
+  console.log(`Legacy English pages upgraded: ${upgradedLegacyCount}`);
   console.log(`Wrote index.html, ${config.generatedIndexFile || "generated-calculators.html"}, and sitemap.xml`);
 }
 
