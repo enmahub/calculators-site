@@ -51,10 +51,14 @@ function calcular() {
 <div>
 <h3>Qué significa cada dato</h3>
 <ul>
-<li><strong>Aporte inicial, aporte mensual, tasa, años</strong> — Entradas para proyección con interés compuesto periódico.</li>
+<li><strong>Monto inicial</strong> — Saldo al inicio del primer mes.</li>
+<li><strong>Aporte mensual</strong> — Cantidad que se añade al final de cada mes.</li>
+<li><strong>Tasa anual (%)</strong> — Se convierte a tasa mensual <em>i = (tasa ÷ 100) ÷ 12</em>.</li>
+<li><strong>Años</strong> — Duración en años; el plazo en meses es <em>años × 12</em>.</li>
 </ul>
 <h3>Regla</h3>
-<p>Crecimiento por períodos con la tasa indicada (estimación educativa).</p>
+<p>Para cada mes: <em>saldo = saldo × (1 + i) + aporte mensual</em>, repetido durante todos los meses del plazo. No se modelan impuestos ni comisiones.</p>
+<p class="small">Proyección educativa; los bancos pueden capitalizar o acreditar en fechas distintas.</p>
 </div>
 </details>
 <div class="trust-block">

@@ -31,7 +31,7 @@ function methodologyCurrency(helpers, entry, lang) {
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p><em>Result ≈ amount × rate</em></p>
-<p class="small">The script loads a suggested rate when online; you can override it. Banks and cards may use different spreads, fees, and cut-off times—use results for planning only.</p>`;
+<p class="small">When you are online, this page can fetch a suggested market rate; you can always type your own. Banks and cards may use different spreads, fees, and cut-off times—use results for planning only.</p>`;
   return methodologyDetailsWrap(helpers, lang, inner);
 }
 
@@ -92,6 +92,14 @@ function methodologyStatePaycheck(helpers, entry, lang) {
 
 function methodologySpanishPilot(helpers, formulaType, lang) {
   const innerByType = {
+    percentage: `<h3>Qué significa cada dato</h3>
+<ul>
+<li><strong>Valor A</strong> — El numerador en la comparación.</li>
+<li><strong>Valor B</strong> — El valor base (denominador).</li>
+</ul>
+<h3>Fórmula</h3>
+<p>Se calcula <em>p = (A ÷ B) × 100</em> y se muestra como “A es p% de B”. Si <strong>B es 0</strong>, se muestra un aviso en lugar de dividir.</p>
+<p class="small">Valores no numéricos se tratan como 0 al leer los campos.</p>`,
     bmi: `<h3>Qué significa cada dato</h3>
 <ul>
 <li><strong>Estatura (cm)</strong> — Altura en centímetros.</li>
@@ -110,14 +118,18 @@ function methodologySpanishPilot(helpers, formulaType, lang) {
 <p>Amortización con cuota fija: <em>M = P × r / (1 − (1 + r)<sup>−n</sup>)</em>, con <em>r</em> mensual y <em>n</em> meses.</p>`,
     savings: `<h3>Qué significa cada dato</h3>
 <ul>
-<li><strong>Aporte inicial, aporte mensual, tasa, años</strong> — Entradas para proyección con interés compuesto periódico.</li>
+<li><strong>Monto inicial</strong> — Saldo al inicio del primer mes.</li>
+<li><strong>Aporte mensual</strong> — Cantidad que se añade al final de cada mes.</li>
+<li><strong>Tasa anual (%)</strong> — Se convierte a tasa mensual <em>i = (tasa ÷ 100) ÷ 12</em>.</li>
+<li><strong>Años</strong> — Duración en años; el plazo en meses es <em>años × 12</em>.</li>
 </ul>
 <h3>Regla</h3>
-<p>Crecimiento por períodos con la tasa indicada (estimación educativa).</p>`,
+<p>Para cada mes: <em>saldo = saldo × (1 + i) + aporte mensual</em>, repetido durante todos los meses del plazo. No se modelan impuestos ni comisiones.</p>
+<p class="small">Proyección educativa; los bancos pueden capitalizar o acreditar en fechas distintas.</p>`,
     kmMi: `<h3>Qué significa cada dato</h3>
-<ul><li>Kilómetros o millas: convierte usando el factor fijo entre unidades.</li></ul>
+<ul><li><strong>Kilómetros</strong> o <strong>millas</strong>: rellena uno; el otro se calcula en la dirección correspondiente.</li></ul>
 <h3>Factor</h3>
-<p>1 milla ≈ 1,609344 km (según la implementación en página).</p>`,
+<p>De km a mi: <em>mi = km × 0,621371</em>. De mi a km: <em>km = mi ÷ 0,621371</em> (mismo factor en ambas direcciones).</p>`,
     cF: `<h3>Qué significa cada dato</h3>
 <ul><li><strong>Celsius / Fahrenheit</strong> — Rellena uno para obtener el otro.</li></ul>
 <h3>Fórmulas</h3>
@@ -134,15 +146,15 @@ function methodologySpanishPilot(helpers, formulaType, lang) {
 <h3>Fórmula</h3>
 <p><em>Precio final = precio × (1 − descuento/100)</em>.</p>`,
     tip: `<h3>Qué significa cada dato</h3>
-<ul><li><strong>Cuenta</strong> y <strong>propina (%)</strong>.</li></ul>
+<ul><li><strong>Cuenta</strong> — Importe antes de propina.</li><li><strong>Propina (%)</strong> — Porcentaje sobre la cuenta.</li></ul>
 <h3>Fórmula</h3>
-<p><em>Total ≈ cuenta × (1 + propina/100)</em> (interpretación de total con propina según el script).</p>`
+<p><em>Total con propina = cuenta × (1 + propina ÷ 100)</em>; la propina en dinero es <em>cuenta × (propina ÷ 100)</em>.</p>`
   };
   const inner =
     innerByType[formulaType] ||
     `<h3>Qué significa cada dato</h3>
-<p>Introduce los valores en los campos. La página calcula en tu navegador según la lógica de esta herramienta.</p>
-<p class="small">Resultados orientativos.</p>`;
+<p>Usa los campos etiquetados arriba y pulsa calcular. El resultado aparece al instante en tu navegador a partir de los números que ingreses.</p>
+<p class="small">Resultados orientativos; revisa redondeos y supuestos en decisiones importantes.</p>`;
   return methodologyDetailsWrap(helpers, lang, inner);
 }
 
@@ -158,8 +170,8 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 
   const generic = () => {
     const inner = `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<p class="desc">Use the labeled fields above. This page runs the calculation in your browser using the rules implemented in this tool.</p>
-<p class="small">Treat results as estimates. Banks, tax authorities, and health professionals may use different definitions—verify important outcomes independently.</p>`;
+<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
+<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>`;
     return methodologyDetailsWrap(helpers, lang, inner);
   };
 
@@ -175,18 +187,32 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p class="small">Simplified fixed-rate payment. Excludes escrow, PMI, fees, and lender rounding.</p>`,
     "loan-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Loan amount, interest rate (% yearly), years</strong> — Same amortization inputs as the mortgage tool.</li>
+<li><strong>Loan amount (<em>P</em>)</strong> — Principal borrowed.</li>
+<li><strong>Interest rate (% yearly)</strong> — Nominal annual rate; monthly rate <em>r = (annual ÷ 100) ÷ 12</em>.</li>
+<li><strong>Years</strong> — Loan term; number of monthly payments <em>n = years × 12</em>.</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>Monthly payment uses standard amortization (see mortgage methodology). Script may use equivalent rearrangement of the same formula.</p>`,
+<p>Fixed-rate payment (same standard amortization as the mortgage calculator):</p>
+<p><em>M = P × r / (1 − (1 + r)<sup>−n</sup>)</em></p>
+<p class="small">If the annual rate is 0%, use <em>M = P ÷ n</em>. The standard formula above assumes a positive monthly rate. Excludes fees, taxes, and lender rounding.</p>`,
     "compound-interest.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li><strong>Principal, rate %, years</strong> — Growth of a lump sum at compounded interest.</li></ul>
+<ul>
+<li><strong>Principal (<em>P</em>)</strong> — Starting lump sum.</li>
+<li><strong>Rate % (<em>r</em>)</strong> — Annual interest rate entered as a percent.</li>
+<li><strong>Years (<em>t</em>)</strong> — Whole years the balance grows.</li>
+</ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>A = P × (1 + r/100)<sup>t</sup></em> (compounding per implementation on the page—often annual).</p>`,
+<p>Interest compounds <strong>once per year</strong> at the rate you enter:</p>
+<p><em>A = P × (1 + r/100)<sup>t</sup></em></p>
+<p class="small">Does not model contributions, withdrawals, or intra-year compounding.</p>`,
     "savings-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li>Typically <strong>monthly savings</strong> and <strong>years</strong> (see labels on the page).</li></ul>
+<ul>
+<li><strong>Monthly saving</strong> — Amount set aside each month (same value every month).</li>
+<li><strong>Years</strong> — How long you save at that monthly rate.</li>
+</ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>Projects total saved over time (simple sum or interest—match the script’s logic on the page).</p>`,
+<p><em>Total saved = monthly saving × 12 × years</em></p>
+<p class="small">This version does not apply investment returns or interest—only the sum of monthly contributions.</p>`,
     "tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Income</strong> — Amount the tax percentage applies to.</li>
@@ -196,21 +222,33 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p><em>Tax ≈ income × (tax% ÷ 100)</em></p>
 <p class="small">Not a full tax return—no brackets, deductions, or credits.</p>`,
     "debt-payoff.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li><strong>Debt</strong> balance and <strong>monthly payment</strong> toward it.</li></ul>
+<ul>
+<li><strong>Debt</strong> — Total balance you want to clear.</li>
+<li><strong>Monthly payment</strong> — Constant amount applied each month toward that balance.</li>
+</ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Months to pay off ≈ debt ÷ monthly payment</em> when interest is not modeled (check the page script for details).</p>`,
+<p><em>Months ≈ debt ÷ monthly payment</em>, then rounded to the nearest whole month for display.</p>
+<p class="small">Interest is not modeled—real loans take longer when interest accrues. Avoid a payment of zero.</p>`,
     "tip-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li><strong>Bill</strong> and <strong>tip %</strong>.</li></ul>
+<ul>
+<li><strong>Bill</strong> — Check amount before tip.</li>
+<li><strong>Tip %</strong> — Percent of the bill you want as gratuity.</li>
+</ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Tip amount ≈ bill × (tip% ÷ 100)</em></p>`,
+<p><em>Tip ($) = bill × (tip% ÷ 100)</em></p>
+<p class="small">The result line shows the tip in dollars only (not bill + tip).</p>`,
     "discount-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul><li><strong>Price</strong> and <strong>discount %</strong>.</li></ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p><em>Final price = price × (1 − discount/100)</em></p>`,
     "percentage-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li>Values depend on mode (percent of, change, etc.)—see placeholders on the page.</li></ul>
+<ul>
+<li><strong>Mode</strong> — Choose <em>Find value (X% of Y)</em> or <em>Find percent (X is what % of Y)</em>; the first two fields relabel automatically.</li>
+<li><strong>Find value</strong> — Enter percentage (%) and base value; result = <em>base × (percentage ÷ 100)</em>.</li>
+<li><strong>Find percent</strong> — Enter part value and total value; result = <em>(part ÷ total) × 100</em> as a percent. If total is 0, the tool shows an error instead of dividing.</li>
+</ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>Uses ratio/percent definitions implemented in the script (e.g. <em>part ÷ whole × 100</em>).</p>`,
+<p>Both modes use standard percent arithmetic; non-numeric inputs are rejected.</p>`,
     "bmi-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Weight (kg)</strong> and <strong>height (m)</strong>.</li>
@@ -219,9 +257,15 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p><em>BMI = weight ÷ height²</em></p>
 <p class="small">Screening metric only—not a medical diagnosis.</p>`,
     "calorie-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li>Age, sex, height, weight, activity—standard Mifflin–St Jeor style inputs on the page.</li></ul>
+<ul>
+<li><strong>Age</strong>, <strong>sex</strong>, <strong>height (cm)</strong>, <strong>weight (kg)</strong> — Used in the Mifflin–St Jeor BMR estimate.</li>
+<li><strong>Activity level</strong> — Multiplies BMR: sedentary 1.2; light 1.375; moderate 1.55; very active 1.725; extra active 1.9.</li>
+</ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>BMR estimate × activity factor → maintenance calories (see script for exact coefficients).</p>`,
+<p><strong>BMR (female):</strong> <em>10 × weight(kg) + 6.25 × height(cm) − 5 × age − 161</em></p>
+<p><strong>BMR (male):</strong> <em>10 × weight(kg) + 6.25 × height(cm) − 5 × age + 5</em></p>
+<p><strong>Maintenance</strong> = BMR × activity factor. <strong>Weight loss</strong> target = maintenance − 500 (not shown below 1200 kcal/day). <strong>Weight gain</strong> target = maintenance + 300.</p>
+<p class="small">Educational estimate only—not medical nutrition advice.</p>`,
     "kilometers-to-miles-converter.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul><li>Enter km or mi; the tool converts using a fixed conversion factor.</li></ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
@@ -231,9 +275,13 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p><em>°F = °C × 9/5 + 32</em>; inverse for °C.</p>`,
     "gpa-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li>Course grades and credit hours as implemented on the page.</li></ul>
+<ul>
+<li><strong>Total grade points</strong> — Combined quality points for the scope you are measuring (one total, not per-row).</li>
+<li><strong>Credits</strong> — Total credit hours that go with those points.</li>
+</ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>GPA = weighted average of grade points by credit hours (match the page’s grade scale).</p>`
+<p><em>GPA = total grade points ÷ credits</em></p>
+<p class="small">This tool divides the two totals you enter; it does not add rows per course. Your school’s rounding or weighting rules may differ.</p>`
   };
 
   if (specific[key]) {

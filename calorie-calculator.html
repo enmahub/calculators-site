@@ -67,15 +67,7 @@ r.innerHTML =
   "Weight gain calories: " + weightGain.toFixed(0) + " kcal/day";
 }
 </script>
-<details class="methodology-block">
-<summary>How this calculation works</summary>
-<div>
-<h3>What each input means</h3>
-<ul><li>Age, sex, height, weight, activity—standard Mifflin–St Jeor style inputs on the page.</li></ul>
-<h3>Formula used</h3>
-<p>BMR estimate × activity factor → maintenance calories (see script for exact coefficients).</p>
-</div>
-</details>
+
 <div class="trust-block">
 <h2>How this result is estimated</h2>
 <p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
@@ -88,14 +80,8 @@ r.innerHTML =
 </div>
 <div class="faq-block">
 <h2>Frequently asked questions</h2>
-<details>
-<summary>Is this calculator result exact?</summary>
-<p>It is an estimate based on your inputs and may differ from official or provider-specific calculations.</p>
-</details>
-<details>
-<summary>Can I rely on this for final financial decisions?</summary>
-<p>Use it for planning and verify important numbers with official sources or licensed professionals.</p>
-</details>
+
+
 </div>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this calculator result exact?","acceptedAnswer":{"@type":"Answer","text":"It is an estimate based on your inputs and may differ from official or provider-specific calculations."}},{"@type":"Question","name":"Can I rely on this for final financial decisions?","acceptedAnswer":{"@type":"Answer","text":"Use it for planning and verify important numbers with official sources or licensed professionals."}}]}</script>
 <p><a href="index.html">Home</a> | <a href="health-calculators.html">Category Hub</a></p>
@@ -107,8 +93,33 @@ r.innerHTML =
 <li><a href="ovulation-calculator.html">Ovulation Calculator</a></li>
 <li><a href="weight-loss-calculator.html">Weight Loss Calculator</a></li>
 </ul>
-
 </div>
+<details class="methodology-block">
+<summary>How this calculation works</summary>
+<div>
+<h3>What each input means</h3>
+<ul>
+<li><strong>Age</strong>, <strong>sex</strong>, <strong>height (cm)</strong>, <strong>weight (kg)</strong> — Used in the Mifflin–St Jeor BMR estimate.</li>
+<li><strong>Activity level</strong> — Multiplies BMR: sedentary 1.2; light 1.375; moderate 1.55; very active 1.725; extra active 1.9.</li>
+</ul>
+<h3>Formula used</h3>
+<p><strong>BMR (female):</strong> <em>10 × weight(kg) + 6.25 × height(cm) − 5 × age − 161</em></p>
+<p><strong>BMR (male):</strong> <em>10 × weight(kg) + 6.25 × height(cm) − 5 × age + 5</em></p>
+<p><strong>Maintenance</strong> = BMR × activity factor. <strong>Weight loss</strong> target = maintenance − 500 (not shown below 1200 kcal/day). <strong>Weight gain</strong> target = maintenance + 300.</p>
+<p class="small">Educational estimate only—not medical nutrition advice.</p>
+</div>
+</details>
+
+<details>
+<summary>Is this calculator result exact?</summary>
+<p>It is an estimate based on your inputs and may differ from official or provider-specific calculations.</p>
+</details>
+
+<details>
+<summary>Can I rely on this for final financial decisions?</summary>
+<p>Use it for planning and verify important numbers with official sources or licensed professionals.</p>
+</details>
+
 <div class="footer">
 <p>Browse Categories</p>
 <div class="category-grid">
