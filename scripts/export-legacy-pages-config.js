@@ -1,8 +1,44 @@
+/**
+ * Export root-level legacy calculator HTML into legacy-pages.config.json (body = card-only HTML).
+ *
+ * Contract: `body` must NOT include the generator "Related" block (hub line + h2 + ul + optional
+ * details). That block is appended by legacyStaticTemplate / relatedHtml in generate-pages.js.
+ * stripEmbeddedRelatedSection() removes known patterns; keep it aligned with relatedHtml output there.
+ * If a future layout adds new markup before/after Related, extend the stripper—do not hand-edit JSON
+ * to delete Related unless you also fix this script.
+ */
 const fs = require("fs");
 const path = require("path");
 
 const root = process.cwd();
 const outputPath = path.join(root, "legacy-pages.config.json");
+
+function normalizePath(value) {
+  return String(value || "").replace(/\\/g, "/").replace(/^\/+/, "");
+}
+
+/** Drop list items whose link resolves to the same page as `pageRef` (legacy card HTML). */
+function stripSelfListItemsFromUls(html, pageRef) {
+  const refNorm = normalizePath(pageRef);
+  const selfKey = refNorm.toLowerCase();
+  return html.replace(/<ul>([\s\S]*?)<\/ul>/gi, (full, inner) => {
+    const cleaned = inner.replace(/<li\b[\s\S]*?<\/li>/gi, (li) => {
+      const m = li.match(/href\s*=\s*["']([^"']+)["']/i);
+      if (!m) {
+        return li;
+      }
+      const pathOnly = m[1].replace(/^\.\//, "").split("#")[0].split("?")[0];
+      const resolved = normalizePath(
+        path.posix.normalize(path.posix.join(path.posix.dirname(refNorm), pathOnly))
+      );
+      if (resolved.toLowerCase() === selfKey) {
+        return "";
+      }
+      return li;
+    });
+    return `<ul>${cleaned}</ul>`;
+  });
+}
 
 const CATEGORY_BY_FILE = {
   "age-calculator.html": { category: "Health", hubPath: "health-calculators.html" },
@@ -53,9 +89,33 @@ const SKIP_FILES = new Set([
   "google00989570bfb5b7e8.html"
 ]);
 
-function normalizeLegacyCardHtml(content) {
+function stripEmbeddedRelatedSection(html) {
+  let next = html || "";
+  // Old manual blocks (hr optional).
+  next = next.replace(
+    /(?:<hr\s*\/?>(?:\s|\r\n|\n)*)(?:\s|\r\n|\n)*<h2>\s*(?:Related Calculators|Calculadoras relacionadas)\s*<\/h2>\s*<ul>[\s\S]*?<\/ul>\s*/gi,
+    ""
+  );
+  next = next.replace(/<p>\s*Related Calculators:\s*<\/p>\s*<ul>[\s\S]*?<\/ul>\s*/gi, "");
+  // Generator tail: must run before orphan-hub strip so the hub <p> is last in the string.
+  next = next.replace(
+    /<h2>\s*(?:Related Calculators|Calculadoras relacionadas)\s*<\/h2>\s*<ul>[\s\S]*?<\/ul>(?:\s*<details>[\s\S]*?<\/details>)?\s*/gi,
+    ""
+  );
+  // Hub line from relatedHtml (EN: home | hub; ES: home | english | hub)—only safe at end of card HTML.
+  next = next.replace(
+    /\s*<p>\s*(?:(?:<a[^>]+>[\s\S]*?<\/a>\s*\|\s*)+<a[^>]+>[\s\S]*?<\/a>\s*)<\/p>\s*$/i,
+    ""
+  );
+  return next.replace(/(?:\r\n|\n|\r|\s)+$/g, "");
+}
+
+function normalizeLegacyCardHtml(content, pageRef) {
   let next = content || "";
-  next = next.replace(/<p>\s*Related Calculators:\s*<\/p>/gi, "<h2>Related Calculators</h2>");
+  next = stripEmbeddedRelatedSection(next);
+  if (pageRef) {
+    next = stripSelfListItemsFromUls(next, pageRef);
+  }
   next = next.replace(/<input([^>]*?)class="([^"]*?)"([^>]*?)>/gi, (full, before, classes, after) => {
     const filtered = classes
       .split(/\s+/)
@@ -69,7 +129,7 @@ function normalizeLegacyCardHtml(content) {
   return next;
 }
 
-function extractCardContent(content) {
+function extractCardContent(content, fileName) {
   const cardMatch = content.match(
     /<div class="card">([\s\S]*?)<\/div>\s*(?:<div class="trust-block"|<div class="footer"|<details|<\/div>\s*<\/body>)/i
   );
@@ -79,7 +139,7 @@ function extractCardContent(content) {
   let cardInner = cardMatch[1];
   cardInner = cardInner.replace(/<div class="trust-block">[\s\S]*?<\/div>/gi, "");
   cardInner = cardInner.replace(/<script[^>]*src="site-analytics\.js"[^>]*><\/script>/gi, "");
-  cardInner = normalizeLegacyCardHtml(cardInner).trim();
+  cardInner = normalizeLegacyCardHtml(cardInner, fileName).trim();
   cardInner = cardInner.replace(/^<div class="card">\s*/i, "");
   cardInner = cardInner.replace(/\s*<\/div>\s*$/i, "");
   return cardInner;
@@ -105,7 +165,7 @@ const pages = files.map((fileName) => {
   const titleMatch = source.match(/<title>([^<]+)<\/title>/i);
   const descriptionMatch = source.match(/<meta\s+name="description"\s+content="([^"]*)"/i);
   const langMatch = source.match(/<html[^>]*\slang="([^"]+)"/i);
-  const cardBody = extractCardContent(source);
+  const cardBody = extractCardContent(source, fileName);
   const routing = CATEGORY_BY_FILE[fileName] || {
     category: "Financial",
     hubPath: "financial-calculators.html"

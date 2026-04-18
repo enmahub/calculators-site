@@ -68,6 +68,13 @@ h2{
   margin-top:20px;
 }
 
+.card h3{
+  margin:18px 0 8px;
+  font-size:17px;
+  font-weight:600;
+  color:#101828;
+}
+
 .desc{
   margin:0 0 18px;
   color:#475467;

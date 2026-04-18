@@ -44,6 +44,44 @@ function trackDupes(map, key, file) {
   map.get(key).push(file);
 }
 
+/** Only <li><a href> after Related h2 and before footer (avoids hub nav / canonical false positives). */
+function relatedListSelfLinkErrors(file, content) {
+  const relatedRe = /<h2>\s*(?:Related Calculators|Calculadoras relacionadas)\s*<\/h2>/i;
+  const idx = content.search(relatedRe);
+  if (idx === -1) {
+    return [];
+  }
+  const fromRelated = content.slice(idx);
+  const footerIdx = fromRelated.search(/<div\s+class="footer">/i);
+  const slice = footerIdx === -1 ? fromRelated : fromRelated.slice(0, footerIdx);
+  const selfKey = file.toLowerCase();
+  const out = [];
+  const liRe = /<li>\s*<a\s+href=["']([^"']+)["']/gi;
+  let m;
+  while ((m = liRe.exec(slice)) !== null) {
+    const href = m[1];
+    const skip =
+      href.startsWith("http://") ||
+      href.startsWith("https://") ||
+      href.startsWith("mailto:") ||
+      href.startsWith("tel:") ||
+      href.startsWith("#") ||
+      href.startsWith("javascript:") ||
+      href.startsWith("//");
+    if (skip) {
+      continue;
+    }
+    const pathOnly = href.split("#")[0].split("?")[0].replace(/^\.\//, "");
+    const resolvedPath = normalizePath(
+      path.posix.normalize(path.posix.join(path.posix.dirname(file), pathOnly))
+    );
+    if (resolvedPath.toLowerCase() === selfKey) {
+      out.push(`${file}: Related list links to itself -> ${href}`);
+    }
+  }
+  return out;
+}
+
 for (const file of htmlFiles) {
   const fullPath = path.join(root, file);
   const content = fs.readFileSync(fullPath, "utf8");
@@ -104,6 +142,10 @@ for (const file of htmlFiles) {
     }
 
     match = hrefRegex.exec(content);
+  }
+
+  for (const msg of relatedListSelfLinkErrors(file, content)) {
+    errors.push(msg);
   }
 }
 

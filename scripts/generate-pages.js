@@ -688,6 +688,13 @@ function isSameMarket(entry, candidate) {
   return (entry.marketId || "en") === (candidate.marketId || "en");
 }
 
+function isSameCalculatorPage(entry, candidate) {
+  return (
+    normalizePath(entry.pagePath || entry.fileName).toLowerCase() ===
+    normalizePath(candidate.pagePath || candidate.fileName).toLowerCase()
+  );
+}
+
 function sortByAmountProximity(candidates, targetAmount) {
   return [...candidates].sort((a, b) => {
     const diffA = Math.abs(Number(a.amount || 0) - Number(targetAmount || 0));
@@ -697,6 +704,60 @@ function sortByAmountProximity(candidates, targetAmount) {
     }
     return a.fileName.localeCompare(b.fileName);
   });
+}
+
+/** Evergreen Finance pillar URLs (legacy calculator pages). Order = priority. */
+const FINANCE_INTERNAL_PILLAR_NAMES = [
+  "loan-calculator.html",
+  "mortgage-calculator.html",
+  "debt-payoff.html",
+  "apr-calculator.html",
+  "compound-interest.html",
+  "savings-calculator.html",
+  "tax-calculator.html",
+  "retirement-calculator.html"
+];
+
+function financePillarOrderForEntry(entry) {
+  if (entry.family === "salaryToHourlyByAmount") {
+    return ["salary-calculator.html", ...FINANCE_INTERNAL_PILLAR_NAMES];
+  }
+  return [...FINANCE_INTERNAL_PILLAR_NAMES];
+}
+
+function resolveLegacyEntryByFileName(entries, fileName) {
+  const key = normalizePath(fileName).toLowerCase();
+  return entries.find(
+    (e) =>
+      normalizePath(e.pagePath || e.fileName).toLowerCase() === key &&
+      e.family === "legacyStaticPage" &&
+      e.indexable !== false
+  );
+}
+
+function resolveFinancePillarsForAmountPage(entries, entry) {
+  const selfKey = normalizePath(entry.pagePath || entry.fileName).toLowerCase();
+  const ordered = [];
+  for (const fn of financePillarOrderForEntry(entry)) {
+    if (normalizePath(fn).toLowerCase() === selfKey) {
+      continue;
+    }
+    const cand = resolveLegacyEntryByFileName(entries, fn);
+    if (cand) {
+      ordered.push(cand);
+    }
+  }
+  let take;
+  if (ordered.length >= 4) {
+    take = 4;
+  } else if (ordered.length >= 3) {
+    take = 3;
+  } else if (ordered.length >= 2) {
+    take = 2;
+  } else {
+    take = ordered.length;
+  }
+  return ordered.slice(0, take);
 }
 
 function scoreCurrencyCandidate(entry, candidate) {
@@ -744,23 +805,59 @@ function pickStructuredRelated(entries, entry) {
   ) {
     const sameFamily = entries.filter(
       (candidate) =>
-        candidate.pagePath !== entry.pagePath &&
+        !isSameCalculatorPage(entry, candidate) &&
         candidate.family === entry.family &&
         isSameMarket(entry, candidate) &&
         candidate.indexable !== false
     );
     const sorted = sortByAmountProximity(sameFamily, entry.amount);
-    return {
-      primary: sorted.slice(0, primaryLimit),
-      expanded: sorted.slice(primaryLimit, primaryLimit + expandedLimit)
-    };
+    const pillars = resolveFinancePillarsForAmountPage(entries, entry);
+    const pillarKeys = new Set(
+      pillars.map((p) => normalizePath(p.pagePath || p.fileName).toLowerCase())
+    );
+    const amountPrimaryCap = 12;
+    const neighborTail = sorted.filter(
+      (c) => !pillarKeys.has(normalizePath(c.pagePath || c.fileName).toLowerCase())
+    );
+    const primary = uniqueByFileName([...pillars, ...neighborTail]).slice(0, amountPrimaryCap);
+    const primaryKeys = new Set(
+      primary.map((p) => normalizePath(p.pagePath || p.fileName).toLowerCase())
+    );
+    const expanded = sorted
+      .filter((c) => !primaryKeys.has(normalizePath(c.pagePath || c.fileName).toLowerCase()))
+      .slice(0, expandedLimit);
+    return { primary, expanded };
   }
 
   if (entry.family === "currencyConverter") {
+    const nonCurrencySameCategory = entries
+      .filter(
+        (candidate) =>
+          candidate.family !== "currencyConverter" &&
+          candidate.pagePath !== entry.pagePath &&
+          candidate.category === entry.category &&
+          isSameMarket(entry, candidate) &&
+          candidate.indexable !== false
+      )
+      .slice()
+      .sort((a, b) =>
+        normalizePath(a.pagePath || a.fileName).localeCompare(normalizePath(b.pagePath || b.fileName))
+      );
+    let mixinCount = 3;
+    if (nonCurrencySameCategory.length >= 3) {
+      mixinCount = 3;
+    } else if (nonCurrencySameCategory.length >= 2) {
+      mixinCount = 2;
+    } else {
+      mixinCount = nonCurrencySameCategory.length;
+    }
+    const mixins = nonCurrencySameCategory.slice(0, mixinCount);
+
     const scored = entries
       .filter(
         (candidate) =>
           candidate.family === "currencyConverter" &&
+          !isSameCalculatorPage(entry, candidate) &&
           isSameMarket(entry, candidate) &&
           candidate.indexable !== false
       )
@@ -774,15 +871,19 @@ function pickStructuredRelated(entries, entry) {
       })
       .map((row) => row.candidate);
 
-    return {
-      primary: scored.slice(0, primaryLimit),
-      expanded: scored.slice(primaryLimit, primaryLimit + expandedLimit)
-    };
+    const primary = uniqueByFileName([...mixins, ...scored]).slice(0, primaryLimit);
+    const primaryKeys = new Set(
+      primary.map((p) => normalizePath(p.pagePath || p.fileName).toLowerCase())
+    );
+    const expanded = scored
+      .filter((c) => !primaryKeys.has(normalizePath(c.pagePath || c.fileName).toLowerCase()))
+      .slice(0, expandedLimit);
+    return { primary, expanded };
   }
 
   const sameCategory = entries.filter(
     (candidate) =>
-      candidate.pagePath !== entry.pagePath &&
+      !isSameCalculatorPage(entry, candidate) &&
       candidate.category === entry.category &&
       isSameMarket(entry, candidate) &&
       candidate.indexable !== false
@@ -797,9 +898,15 @@ function relatedHtml(entries, entry) {
   const labels = LOCALE_LABELS[locale];
   const isSpanish = locale === "es";
   const structured = pickStructuredRelated(entries, entry);
-  const primary = uniqueByFileName(structured.primary);
+  const primary = uniqueByFileName(structured.primary).filter((item) => !isSameCalculatorPage(entry, item));
   const expanded = uniqueByFileName(structured.expanded).filter(
-    (item) => !primary.some((p) => p.fileName === item.fileName)
+    (item) =>
+      !isSameCalculatorPage(entry, item) &&
+      !primary.some(
+        (p) =>
+          normalizePath(p.pagePath || p.fileName).toLowerCase() ===
+          normalizePath(item.pagePath || item.fileName).toLowerCase()
+      )
   );
   if (!primary.length && !expanded.length) {
     return "";
@@ -1314,6 +1421,9 @@ ${relatedHtml(entries, entry)}`
 
 function legacyStaticTemplate(entry, entries) {
   const faqItems = faqItemsForEntry(entry);
+  const pageLang = entry.lang || config.defaults?.lang || "en";
+  const pagePath = normalizePath(entry.pagePath || entry.fileName);
+  const canonicalPath = normalizePath(entry.canonicalPath || entry.pagePath || entry.fileName);
   let normalizedBody = String(entry.body || "");
   normalizedBody = normalizedBody.replace(/<p>\s*Related Calculators:\s*<\/p>/gi, "<h2>Related Calculators</h2>");
   normalizedBody = normalizedBody.replace(/<input([^>]*?)class="([^"]*?)"([^>]*?)>/gi, (full, before, classes, after) => {
@@ -1326,19 +1436,17 @@ function legacyStaticTemplate(entry, entries) {
     }
     return `<input${before}class="${filtered.join(" ")}"${after}>`;
   });
-  const hasRelatedSection =
-    /<h2>\s*Related Calculators\s*<\/h2>/i.test(normalizedBody) ||
-    /<h2>\s*Calculadoras relacionadas\s*<\/h2>/i.test(normalizedBody);
-  const relatedSection = hasRelatedSection ? "" : relatedHtml(entries, entry);
+  const relatedSection = relatedHtml(entries, entry);
   return htmlShell({
     title: entry.title,
     description: entry.description,
-    lang: entry.lang || "en",
-    pagePath: entry.pagePath || entry.fileName,
-    canonicalPath: entry.pagePath || entry.fileName,
+    lang: pageLang,
+    pagePath,
+    robotsDirective: entry.indexable === false ? "noindex, follow" : "index, follow",
+    canonicalPath,
     body: `${normalizedBody}
-${trustBlockHtml(entry.trustTopic || "calculator", entry.lang || "en")}
-${faqSectionHtml(faqItems, entry.lang || "en")}
+${trustBlockHtml(entry.trustTopic || "calculator", pageLang)}
+${faqSectionHtml(faqItems, pageLang)}
 ${faqSchemaHtml(faqItems)}
 ${relatedSection}`
   });
@@ -1488,7 +1596,8 @@ function buildEntries() {
       h1: page.h1 || "Calculator",
       trustTopic: page.trustTopic || "calculator",
       body: page.body,
-      indexable: page.indexable !== false
+      indexable: page.indexable !== false,
+      ...(page.canonicalPath ? { canonicalPath: normalizePath(page.canonicalPath) } : {})
     });
   }
 
@@ -1537,6 +1646,75 @@ function groupEntriesByCategory(entries) {
     acc[entry.category].push(entry);
     return acc;
   }, {});
+}
+
+function compareEntryPathsForHub(a, b) {
+  return normalizePath(a.pagePath || a.fileName).localeCompare(normalizePath(b.pagePath || b.fileName));
+}
+
+/** Conversion hub: split currency pairs from other Conversions tools (same markers as upsertCategoryHubSection). */
+function upsertConversionHubSplitSection(entries) {
+  const fileName = "conversion-calculators.html";
+  const filePath = path.join(root, fileName);
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+
+  const englishEntries = entries.filter(
+    (entry) => (entry.marketId || "en") === "en" && entry.indexable !== false
+  );
+  const conversion = englishEntries.filter((entry) => entry.category === "Conversions");
+  const unitTime = conversion
+    .filter((entry) => entry.family !== "currencyConverter")
+    .slice()
+    .sort(compareEntryPathsForHub);
+  const currency = conversion
+    .filter((entry) => entry.family === "currencyConverter")
+    .slice()
+    .sort(compareEntryPathsForHub);
+
+  const startMarker = "<!-- GENERATED_CATEGORY_LINKS_START -->";
+  const endMarker = "<!-- GENERATED_CATEGORY_LINKS_END -->";
+  const hubPath = normalizePath(fileName);
+  const linkItem = (item) =>
+    `<li><a href="${toHref(hubPath, item.pagePath || item.fileName)}">${escapeHtml(item.h1)}</a></li>`;
+
+  const blocks = [];
+  if (unitTime.length > 0) {
+    blocks.push(`<h2>Unit & time converters (${unitTime.length})</h2>
+<!-- Generated from pages.config.json -->
+<ul>
+${unitTime.map(linkItem).join("\n")}
+</ul>`);
+  }
+  if (currency.length > 0) {
+    blocks.push(`<h2>Currency converters (${currency.length})</h2>
+<!-- Generated from pages.config.json -->
+<ul>
+${currency.map(linkItem).join("\n")}
+</ul>`);
+  }
+  const section = `${startMarker}
+${blocks.join("\n\n")}
+${endMarker}`;
+
+  let content = fs.readFileSync(filePath, "utf8");
+  if (content.includes(startMarker) && content.includes(endMarker)) {
+    const replacePattern = new RegExp(`\\n?${startMarker}[\\s\\S]*?${endMarker}\\n?`, "m");
+    content = content.replace(replacePattern, "\n");
+  }
+
+  if (content.includes("<hr>")) {
+    content = content.replace("<hr>", `${section}\n\n<hr>`);
+  } else if (/<\/div>\s*<div class="footer">/i.test(content)) {
+    content = content.replace(/<\/div>\s*<div class="footer">/i, `${section}\n</div>\n\n<div class="footer">`);
+  } else if (content.includes("</body>")) {
+    content = content.replace("</body>", `${section}\n</body>`);
+  } else {
+    content += `\n${section}\n`;
+  }
+
+  fs.writeFileSync(filePath, content, "utf8");
 }
 
 function upsertCategoryHubSection(fileName, heading, items) {
@@ -1610,11 +1788,7 @@ function syncMainCategoryPages(entries) {
     );
   }
   if (conversionGenerated.length > 0) {
-    upsertCategoryHubSection(
-      "conversion-calculators.html",
-      `More Conversion Calculators (${conversionGenerated.length})`,
-      conversionGenerated
-    );
+    upsertConversionHubSplitSection(entries);
   }
   if (careerGenerated.length > 0) {
     upsertCategoryHubSection(
@@ -1774,6 +1948,46 @@ function writeHomeIndex(entries) {
       const viewAll = viewAllCount
         ? `<p><a href="${section.hub}">View all ${viewAllCount} ${escapeHtml(section.category)} calculators</a></p>`
         : `<p><a href="${section.hub}">Browse all ${escapeHtml(section.category)} calculators</a></p>`;
+
+      if (section.category === "Conversions") {
+        const currencySpotlight = [];
+        const families = config.families || {};
+        if (families.currencyConverter?.enabled) {
+          for (const [from, to] of getCurrencyPairs(families.currencyConverter)) {
+            const slug = slugify(`${from}-to-${to}-converter`);
+            const fileName = `${slug}.html`;
+            const key = normalizePath(fileName).toLowerCase();
+            const found = entries.find(
+              (e) =>
+                e.family === "currencyConverter" &&
+                normalizePath(e.pagePath || e.fileName).toLowerCase() === key
+            );
+            if (found && found.indexable !== false) {
+              currencySpotlight.push(found);
+            }
+            if (currencySpotlight.length >= 4) {
+              break;
+            }
+          }
+        }
+        const currencyList = currencySpotlight
+          .map(
+            (e) =>
+              `<li><a href="${normalizePath(e.pagePath || e.fileName)}">${escapeHtml(e.h1)}</a></li>`
+          )
+          .join("\n");
+        return `<h2>${escapeHtml(section.category)}</h2>
+${viewAll}
+<h3>Unit & time converters</h3>
+<ul>
+${listItems}
+</ul>
+<h3>Currency converters</h3>
+<ul>
+${currencyList}
+</ul>`;
+      }
+
       return `<h2>${escapeHtml(section.category)}</h2>\n${viewAll}\n<ul>\n${listItems}\n</ul>`;
     })
     .join("\n\n");

@@ -1,47 +1,46 @@
 # Monetization Page Audit (Requested vs Existing)
 
+Spot-checked against the current English hub lists in `financial-calculators.html` (manual list + “More Financial Calculators” block) and `career-calculators.html` (manual list + “More Career Calculators” block).
+
 ## Already Existing or Close Equivalent
 
-- **Employment / Income**
-  - `overtime-pay-calculator.html` (exists)
-  - `commission-calculator.html` (exists, includes base pay)
+- **Employment / Income** (see **Career** hub generated list unless noted)
+  - `overtime-pay-calculator.html`, `commission-calculator.html`, `biweekly-to-annual-salary-calculator.html`, `take-home-paycheck-calculator.html`, `raise-calculator.html`
+  - `salary-after-tax-calculator.html` (Salary After Tax Calculator, US)
+  - `hourly-to-salary-after-tax-calculator.html`
+  - `1099-vs-w2-income-calculator.html`
+  - `freelance-tax-estimate-calculator.html`
+  - `side-hustle-income-tax-calculator.html`
+  - `self-employment-tax-calculator.html`
   - State paycheck pilots: `us/ca/paycheck-calculator.html`, `us/tx/paycheck-calculator.html`, `us/fl/paycheck-calculator.html`, `us/ny/paycheck-calculator.html`, `us/wa/paycheck-calculator.html`
-- **Debt / Loans**
-  - `debt-payoff.html` (exists)
-  - `credit-card-interest-calculator.html` (exists)
-  - `refinance-calculator.html` (close to refinance savings)
-- **Housing**
-  - `rent-vs-buy-calculator.html` (exists)
+- **Debt / Loans** (see **Financial** hub generated list unless noted)
+  - `debt-payoff.html`, `credit-card-interest-calculator.html`, `refinance-calculator.html`
+  - `debt-snowball-calculator.html`, `debt-avalanche-calculator.html`, `extra-payment-loan-calculator.html`
+- **Housing** (Financial hub generated list)
+  - `rent-vs-buy-calculator.html`
+  - `mortgage-affordability-calculator.html`, `closing-cost-calculator.html`, `property-tax-estimate-calculator.html`
 - **Business / Freelance**
   - `break-even-calculator.html` (close to break-even time)
   - `profit-margin-calculator.html` (close to profit per sale)
+  - `self-employment-tax-calculator.html` (listed under Career hub; tax angle for freelancers)
 - **Repeat Use**
-  - `emergency-fund-calculator.html` (exists)
-  - `net-worth-calculator.html` (exists)
+  - `emergency-fund-calculator.html`, `net-worth-calculator.html`
+- **Other Financial hub tools** (generated block; useful cross-sell)
+  - `roi-calculator.html`, `debt-to-income-calculator.html`, `401k-calculator.html`, `payback-period-calculator.html`, `apr-calculator.html`
+  - Amount-based loan and salary pages (e.g. `*-loan-payment-calculator.html`, `*-salary-to-hourly-calculator.html`) appear in the Financial hub list as generated entries
 
 ## Missing from Requested High-Intent List
 
-- **Employment / Income**
-  - Salary After Tax Calculator (US)
-  - Hourly to Salary After Tax Calculator
-  - Freelance Tax Estimate Calculator
-  - 1099 vs W2 Income Calculator
-  - Side Hustle Income Tax Calculator
+These intents do **not** have a matching calculator page in the repo (no `*.html` found under the site root / `us/` beyond the hubs above).
+
 - **Debt / Loans**
-  - Debt Snowball Calculator
-  - Debt Avalanche Calculator
-  - Extra Payment Loan Calculator
   - Auto Loan Down Payment Calculator
   - Personal Loan Affordability Calculator
 - **Housing**
-  - Mortgage Affordability Calculator
-  - Closing Cost Calculator
-  - Property Tax Estimate Calculator
   - Security Deposit Calculator
   - Roommate Rent Split Calculator
 - **Business / Freelance**
   - Invoice Tax Calculator
-  - Self-Employment Tax Calculator
   - Freelancer Day Rate Calculator
   - Subscription Revenue Calculator
 
