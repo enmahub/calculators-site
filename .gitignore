@@ -1,0 +1,12 @@
+node_modules/
+
+# Local / OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.idea/
+.vscode/
+*.log

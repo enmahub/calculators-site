@@ -13,10 +13,14 @@ This project now includes a config-driven generator so you can scale from tens o
   - `index.html` (primary generated navigation index)
   - main category hubs (`financial-calculators.html`, `conversion-calculators.html`, `career-calculators.html`, `health-calculators.html`) with generated link sections
   - `sitemap.xml`
+  - **`search-index.json`** — data for the header **site search** (`site-search.js`). Regenerate whenever entries or titles change so search matches shipped pages.
 - `robots.txt`: Includes explicit sitemap declaration for crawler discovery.
 - `site-analytics.js`: Centralized GA4/event hook loader (safe if GA ID is blank).
 - `scripts/validate-pages.js`: Validates metadata/link quality.
+- `scripts/migrate-layout.js`: Wraps **root-level** legacy HTML in the shared top nav, footer, and search block. Pages already built by `generate-pages.js` (they set `data-page-path` on `<html>`) are skipped. Nested paths for search assets come from the generator, not this script.
 - `package.json`: Includes npm scripts.
+
+Pull requests: see **`CONTRIBUTING.md`**. GitHub Actions runs **`npm run validate:pages`** on `main` pushes and PRs.
 
 ## Commands
 
