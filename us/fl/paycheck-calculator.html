@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="us/fl/paycheck-calculator.html">
 <head>
-<title>Florida Paycheck Calculator (Estimate)</title>
-<meta name="description" content="Estimate paycheck amounts in Florida using gross salary and a state tax assumption.">
+<title>Florida Net Pay Estimate (Federal + State Income Tax Only)</title>
+<meta name="description" content="Rough annual take-home after estimated federal income tax and a flat Florida state income tax assumption—does not include FICA, local taxes, or pre-tax deductions.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/us/fl/paycheck-calculator.html">
@@ -23,7 +23,7 @@
 <div class="wrap">
 <div class="card">
 <h1>Florida Paycheck Calculator</h1>
-<p class="desc">Estimate paycheck outcomes for Florida using IRS-style progressive federal brackets and a transparent state tax assumption (0.0%).</p>
+<p class="desc">Planning-only estimate: federal income tax (IRS-style brackets + standard deduction) plus a flat <strong>0.0%</strong> state income tax on gross for Florida. <strong>Excludes FICA (Social Security and Medicare),</strong> local taxes, and paycheck deductions—compare with your actual pay stub.</p>
 <label for="salary">Annual Gross Salary ($):</label>
 <input type="number" id="salary" value="70000"><br><br>
 <label for="year">Federal Tax Year:</label>
@@ -135,7 +135,7 @@ function calcPaycheck() {
 <p>Federal income tax is estimated with <strong>progressive brackets</strong> after the <strong>standard deduction</strong> for the chosen status and year.</p>
 <p><strong>Florida state tax</strong> is approximated as a flat <strong>0.0%</strong> of gross (pilot assumption—not a full state return).</p>
 <p><em>Net ≈ gross − estimated federal tax − estimated state tax</em>; then divided into monthly / biweekly / weekly for display.</p>
-<p class="small">Not payroll advice. Real paychecks include FICA, local taxes, pre-tax deductions, and withholding adjustments.</p>
+<p class="small">The page title uses “paycheck” loosely for take-home after <strong>income taxes only</strong>. It is not payroll advice: real paychecks include <strong>FICA</strong>, local taxes, pre-tax deductions, and withholding adjustments.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -151,19 +151,19 @@ function calcPaycheck() {
 <div class="faq-block">
 <h2>Frequently asked questions</h2>
 <details>
-<summary>How is federal tax estimated?</summary>
-<p>Federal tax uses progressive IRS-style brackets and standard deduction assumptions by filing status.</p>
+<summary>Does this estimate include Social Security and Medicare (FICA)?</summary>
+<p>No. This tool only subtracts estimated federal income tax and a simple flat state income tax assumption from gross. Real paychecks also withhold FICA, may include local taxes, and depend on your W-4 and benefits.</p>
 </details>
 <details>
-<summary>Does this include every local tax rule?</summary>
-<p>No. Local taxes, pre-tax benefits, and special cases may change take-home pay.</p>
+<summary>Why is state tax shown as a flat percent?</summary>
+<p>These state pages use a single transparent percentage on gross as a planning shortcut—not a full state tax return, credits, or local add-ons.</p>
 </details>
 <details>
-<summary>Can I use this as my exact paycheck amount?</summary>
-<p>Use it as a planning estimate and compare with your payroll provider for exact numbers.</p>
+<summary>How should I use the monthly or biweekly numbers?</summary>
+<p>Treat them as rough splits of the estimated annual net after the modeled taxes only. Compare with your pay stub or payroll provider for withholding-accurate amounts.</p>
 </details>
 </div>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How is federal tax estimated?","acceptedAnswer":{"@type":"Answer","text":"Federal tax uses progressive IRS-style brackets and standard deduction assumptions by filing status."}},{"@type":"Question","name":"Does this include every local tax rule?","acceptedAnswer":{"@type":"Answer","text":"No. Local taxes, pre-tax benefits, and special cases may change take-home pay."}},{"@type":"Question","name":"Can I use this as my exact paycheck amount?","acceptedAnswer":{"@type":"Answer","text":"Use it as a planning estimate and compare with your payroll provider for exact numbers."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does this estimate include Social Security and Medicare (FICA)?","acceptedAnswer":{"@type":"Answer","text":"No. This tool only subtracts estimated federal income tax and a simple flat state income tax assumption from gross. Real paychecks also withhold FICA, may include local taxes, and depend on your W-4 and benefits."}},{"@type":"Question","name":"Why is state tax shown as a flat percent?","acceptedAnswer":{"@type":"Answer","text":"These state pages use a single transparent percentage on gross as a planning shortcut—not a full state tax return, credits, or local add-ons."}},{"@type":"Question","name":"How should I use the monthly or biweekly numbers?","acceptedAnswer":{"@type":"Answer","text":"Treat them as rough splits of the estimated annual net after the modeled taxes only. Compare with your pay stub or payroll provider for withholding-accurate amounts."}}]}</script>
 <p><a href="../../index.html">Home</a> | <a href="../../financial-calculators.html">Category Hub</a></p>
 <h2>Related Calculators</h2>
 <ul>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="self-employment-tax-calculator.html">
 <head>
-<title>Self-Employment Tax Calculator - Estimate SE Tax</title>
-<meta name="description" content="Estimate self-employment tax from net business income for freelancers and contractors.">
+<title>Self-Employment Tax Calculator - SE Tax on Net Earnings</title>
+<meta name="description" content="Estimate self-employment tax from net business income; optionally apply the IRS 92.35% net-earnings factor before your combined SE rate.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/self-employment-tax-calculator.html">
@@ -23,9 +23,10 @@
 <div class="wrap">
 <div class="card">
 <h1>Self-Employment Tax Calculator</h1>
-<p class="desc">Estimate self-employment tax using net earnings assumptions.</p>
+<p class="desc">Applies your combined Social Security + Medicare self-employment rate to a base you choose. Check the factor if your input is Schedule C net profit (typical Schedule SE path).</p>
 <label for="income">Net business income</label>
 <input id="income" type="number" step="any" placeholder="65000">
+<label><input type="checkbox" id="apply9235" checked> Apply 92.35% net earnings factor before the rate</label>
 <label for="seRate">Self-employment tax rate (%)</label>
 <input id="seRate" type="number" step="any" value="15.3">
 <button onclick="calc()">Calculate</button>
@@ -34,11 +35,13 @@
 function calc(){
   const income = parseFloat(document.getElementById('income').value);
   const seRate = parseFloat(document.getElementById('seRate').value) || 0;
+  const apply9235 = document.getElementById('apply9235').checked;
   if (!Number.isFinite(income) || income < 0) {
     document.getElementById('result').innerHTML = 'Enter a valid income.';
     return;
   }
-  const tax = income * (seRate / 100);
+  const base = apply9235 ? income * 0.9235 : income;
+  const tax = base * (seRate / 100);
   document.getElementById('result').innerHTML = 'Estimated self-employment tax: $' + tax.toFixed(2);
 }
 </script>
@@ -47,12 +50,13 @@ function calc(){
 <div>
 <h3>What each input means</h3>
 <ul>
-<li><strong>Net business income</strong> — Profit base the rate applies to.</li>
-<li><strong>Self-employment tax rate (%)</strong> — Default 15.3% placeholder for combined Social Security/Medicare style estimates.</li>
+<li><strong>Net business income</strong> — Profit base before the optional IRS earnings factor.</li>
+<li><strong>Apply 92.35% factor</strong> — Optional checkbox: multiplies net income by 0.9235 before the rate (Schedule SE uses this on net earnings from self-employment).</li>
+<li><strong>Self-employment tax rate (%)</strong> — Default 15.3% is a common combined placeholder; you can edit it.</li>
 </ul>
 <h3>Formula used</h3>
-<p><em>Estimated SE tax ≈ income × (rate ÷ 100)</em> as a single line item.</p>
-<p class="small">Not Schedule SE—ignores wage base limits, half deduction, or additional Medicare tax.</p>
+<p><em>Estimated SE tax ≈ (optional 92.35% ×) income × (rate ÷ 100)</em> as one dollar output.</p>
+<p class="small">Still not Schedule SE—ignores Social Security wage base cap, Medicare surtax tiers, and the employer-equivalent deduction.</p>
 </div>
 </details>
 <div class="trust-block">

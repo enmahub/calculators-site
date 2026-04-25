@@ -86,7 +86,7 @@ function methodologyStatePaycheck(helpers, entry, lang) {
 <p>Federal income tax is estimated with <strong>progressive brackets</strong> after the <strong>standard deduction</strong> for the chosen status and year.</p>
 <p><strong>${stateName} state tax</strong> is approximated as a flat <strong>${escapeHtml(ratePct)}%</strong> of gross (pilot assumption—not a full state return).</p>
 <p><em>Net ≈ gross − estimated federal tax − estimated state tax</em>; then divided into monthly / biweekly / weekly for display.</p>
-<p class="small">Not payroll advice. Real paychecks include FICA, local taxes, pre-tax deductions, and withholding adjustments.</p>`;
+<p class="small">The page title uses “paycheck” loosely for take-home after <strong>income taxes only</strong>. It is not payroll advice: real paychecks include <strong>FICA</strong>, local taxes, pre-tax deductions, and withholding adjustments.</p>`;
   return methodologyDetailsWrap(helpers, lang, inner);
 }
 
@@ -94,12 +94,12 @@ function methodologySpanishPilot(helpers, formulaType, lang) {
   const innerByType = {
     percentage: `<h3>Qué significa cada dato</h3>
 <ul>
-<li><strong>Valor A</strong> — El numerador en la comparación.</li>
-<li><strong>Valor B</strong> — El valor base (denominador).</li>
+<li><strong>Modo “Hallar un valor”</strong> — Ingresa un porcentaje y un total; el resultado es <em>total × (porcentaje ÷ 100)</em>.</li>
+<li><strong>Modo “Hallar porcentaje”</strong> — Ingresa la parte (A) y el total (B); el resultado es <em>(A ÷ B) × 100</em> como “A es p% de B”. Si <strong>B es 0</strong>, se muestra un aviso.</li>
 </ul>
 <h3>Fórmula</h3>
-<p>Se calcula <em>p = (A ÷ B) × 100</em> y se muestra como “A es p% de B”. Si <strong>B es 0</strong>, se muestra un aviso en lugar de dividir.</p>
-<p class="small">Valores no numéricos se tratan como 0 al leer los campos.</p>`,
+<p>En modo valor: <em>resultado = base × (porcentaje ÷ 100)</em>. En modo porcentaje: <em>p = (A ÷ B) × 100</em>.</p>
+<p class="small">Los campos vacíos o no numéricos no son válidos hasta que ingreses números.</p>`,
     bmi: `<h3>Qué significa cada dato</h3>
 <ul>
 <li><strong>Estatura (cm)</strong> — Altura en centímetros.</li>
@@ -207,20 +207,22 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p class="small">Does not model contributions, withdrawals, or intra-year compounding.</p>`,
     "savings-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Monthly saving</strong> — Amount set aside each month (same value every month).</li>
-<li><strong>Years</strong> — How long you save at that monthly rate.</li>
+<li><strong>Starting balance</strong> — Amount already saved before the first month.</li>
+<li><strong>Monthly saving</strong> — Deposited at the end of each month.</li>
+<li><strong>Years</strong> — Projection length (converted to months).</li>
+<li><strong>Expected annual return (%)</strong> — Nominal rate converted to monthly <em>r = (annual ÷ 100) ÷ 12</em>; use <strong>0</strong> for no growth (contributions only).</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Total saved = monthly saving × 12 × years</em></p>
-<p class="small">This version does not apply investment returns or interest—only the sum of monthly contributions.</p>`,
+<p>Month-by-month: <em>balance = balance × (1 + r) + monthly saving</em> for <em>years × 12</em> months.</p>
+<p class="small">Simplified projection—no taxes, fees, contribution limits, or irregular deposits.</p>`,
     "tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Income</strong> — Amount the tax percentage applies to.</li>
-<li><strong>Tax %</strong> — Effective or marginal rate you choose for a quick estimate.</li>
+<li><strong>Income</strong> — Dollar base the percentage applies to.</li>
+<li><strong>Tax %</strong> — One blended rate you supply (effective or marginal style estimate).</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Tax ≈ income × (tax% ÷ 100)</em></p>
-<p class="small">Not a full tax return—no brackets, deductions, or credits.</p>`,
+<p><em>Estimated tax ≈ income × (tax% ÷ 100)</em>; you can mentally subtract from income for a rough net.</p>
+<p class="small">Not a full tax return—no brackets, deductions, credits, self-employment tax, or state splits.</p>`,
     "debt-payoff.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Debt</strong> — Total balance you want to clear.</li>
@@ -233,10 +235,11 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <ul>
 <li><strong>Bill</strong> — Check amount before tip.</li>
 <li><strong>Tip %</strong> — Percent of the bill you want as gratuity.</li>
+<li><strong>People splitting bill</strong> — Optional; when greater than 1, the page shows per-person totals.</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Tip ($) = bill × (tip% ÷ 100)</em></p>
-<p class="small">The result line shows the tip in dollars only (not bill + tip).</p>`,
+<p><em>Tip = bill × (tip% ÷ 100)</em>; <em>bill + tip</em> for the full check; per-person lines divide by the people count.</p>
+<p class="small">Does not add tax lines or itemize service charges—numbers are as you enter them.</p>`,
     "discount-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul><li><strong>Price</strong> and <strong>discount %</strong>.</li></ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
@@ -328,11 +331,11 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p class="small">Gross-only; ignores taxes, pre-tax deductions, and employers that use 24 or 27 pay periods.</p>`,
     "break-even-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Fixed costs</strong> — Overhead that does not change with each unit sold.</li>
-<li><strong>Price per unit</strong> and <strong>cost per unit</strong> — Used to form contribution margin per unit.</li>
+<li><strong>Fixed costs</strong> — Overhead that does not change with each unit sold (must be ≥ 0).</li>
+<li><strong>Price per unit</strong> and <strong>variable cost per unit</strong> — Contribution margin per unit must be positive (<em>price − cost &gt; 0</em>).</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Break-even units = fixed costs ÷ (price per unit − cost per unit)</em> when the denominator is positive.</p>
+<p><em>Break-even units = fixed costs ÷ (price per unit − cost per unit)</em>; the page rounds up to the next whole unit.</p>
 <p class="small">Assumes linear unit economics; does not model discounts, capacity limits, or mixed product lines.</p>`,
     "closing-cost-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
@@ -362,22 +365,22 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p class="small">Real cards use daily balance methods, grace periods, and promo rates—confirm with your issuer.</p>`,
     "debt-avalanche-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Total debt balance</strong> — Single combined balance the tool treats as one loan (strategy label is informational).</li>
+<li><strong>Total debt balance</strong> — One combined principal modeled as a single amortizing loan (the “avalanche” label describes the strategy concept, not per-account ordering in this tool).</li>
 <li><strong>Average APR (%)</strong> — Converted to monthly rate <em>r = APR ÷ 100 ÷ 12</em>.</li>
 <li><strong>Monthly payment budget</strong> — Constant payment applied each month.</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p>Uses the standard amortization payoff-time solve for one balance: months from <em>log</em> formula on payment, rate, and principal (same numeric model as the snowball page on this site).</p>
-<p class="small">Does not reorder multiple debts; use it as a quick single-balance illustration, not a full avalanche schedule.</p>`,
+<p class="small">Does not reorder multiple debts or allocate payments across accounts—use it as a quick single-balance payoff-time estimate.</p>`,
     "debt-snowball-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Total debt balance</strong> — Aggregated balance modeled as one account.</li>
+<li><strong>Total debt balance</strong> — One combined principal modeled as a single amortizing loan (the “snowball” label describes the strategy concept, not smallest-balance ordering in this tool).</li>
 <li><strong>Average APR (%)</strong> — Monthly rate <em>r = APR ÷ 100 ÷ 12</em>.</li>
 <li><strong>Monthly payment budget</strong> — Applied until the balance is paid.</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p>Same payoff-months math as the avalanche page here: one-balance amortization closed form using log of payment ratio.</p>
-<p class="small">Snowball ordering of multiple debts is not simulated—only one combined principal.</p>`,
+<p class="small">Does not simulate paying smallest balances first across multiple accounts—only one combined principal.</p>`,
     "debt-to-income-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Monthly gross income</strong> — Denominator for the ratio.</li>
@@ -397,10 +400,10 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
     "extra-payment-loan-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Loan balance, annual rate (%), remaining term (years)</strong> — Used to compute the baseline amortizing payment.</li>
-<li><strong>Extra payment per month</strong> — Added to that payment; payoff months recomputed from the same monthly rate.</li>
+<li><strong>Extra payment per month</strong> — Added to that payment; payoff is simulated month-by-month until the balance is paid.</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>Baseline payment uses fixed-rate amortization <em>M = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</em> with <em>r</em> monthly and <em>n</em> months. New payoff months from the closed-form log expression with the increased payment.</p>
+<p>Baseline payment uses fixed-rate amortization <em>M = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</em> with <em>r</em> monthly and <em>n</em> months. <strong>Interest totals</strong> sum each month’s <em>balance × r</em> until payoff for the baseline schedule vs the increased-payment schedule.</p>
 <p class="small">Assumes the extra pays down principal immediately; ignores fees, taxes, and escrow.</p>`,
     "freelance-tax-estimate-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
@@ -463,6 +466,7 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <ul>
 <li><strong>Gross monthly income</strong> and <strong>target DTI limit (%)</strong> — Housing budget cap ≈ <em>income × (DTI ÷ 100) − other monthly debts</em>.</li>
 <li><strong>Estimated mortgage rate (%)</strong> and <strong>loan term (years)</strong> — Convert payment capacity into a loan principal using the amortization identity.</li>
+<li><strong>Down payment (% of purchase price)</strong> — Optional; if provided, <em>estimated price ≈ loan ÷ (1 − down% ÷ 100)</em> (loan-only math; not a full cash-to-close).</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p>Payment-to-loan principal: <em>loan ≈ max housing × ((1 + r)<sup>n</sup> − 1) ÷ (r(1 + r)<sup>n</sup>)</em> with monthly <em>r</em> and <em>n = years × 12</em>; if <em>r = 0</em>, <em>loan = max housing × n</em>.</p>
@@ -489,7 +493,7 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <li><strong>Cycle length (days)</strong> — Typical menstrual cycle length you enter.</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>Adds <em>(cycle length − 14)</em> days to the last-period date to approximate mid-cycle ovulation.</p>
+<p>Adds <em>(cycle length − 14)</em> days to the last-period date to approximate ovulation (about two weeks before the next expected period). The page also shows a <strong>rough fertile window</strong> (about two days before through two days after that estimate).</p>
 <p class="small">Simplified calendar estimate—not medical timing or fertility treatment guidance.</p>`,
     "payback-period-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
@@ -538,13 +542,14 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p class="small">Omits opportunity cost, appreciation, transaction costs, and tax deductions.</p>`,
     "retirement-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Current savings</strong> — Starting balance.</li>
-<li><strong>Monthly contribution</strong> — Multiplied by <em>12 × years</em> in the page script.</li>
-<li><strong>Years</strong> — Horizon length.</li>
+<li><strong>Current savings</strong> — Starting balance before monthly contributions.</li>
+<li><strong>Monthly contribution</strong> — Added at the end of each month in the simulation.</li>
+<li><strong>Years</strong> — Number of years to project (converted to months).</li>
+<li><strong>Expected annual return (%)</strong> — Nominal rate converted to a monthly rate <em>r = (annual ÷ 100) ÷ 12</em>; use <strong>0</strong> for no growth (contributions only).</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p>As coded: <em>Total shown ≈ current savings + (monthly × 12 × years)</em>—a sum of contributions without investment growth.</p>
-<p class="small">Not a future-value-of-savings model; see the 401(k) tool for growth assumptions.</p>`,
+<p>Month-by-month: <em>balance = balance × (1 + r) + monthly contribution</em> for <em>years × 12</em> months. This is a simplified projection, not tax-adjusted or inflation-adjusted.</p>
+<p class="small">Does not model employer match, contribution limits, or withdrawals; compare with the 401(k) tool for salary-percent contribution patterns.</p>`,
     "roi-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Initial investment</strong> — Starting outlay.</li>
@@ -575,12 +580,13 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p><em>Minutes = seconds ÷ 60</em>; <em>seconds = minutes × 60</em>.</p>`,
     "self-employment-tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
-<li><strong>Net business income</strong> — Profit base the rate applies to.</li>
-<li><strong>Self-employment tax rate (%)</strong> — Default 15.3% placeholder for combined Social Security/Medicare style estimates.</li>
+<li><strong>Net business income</strong> — Profit base before the optional IRS earnings factor.</li>
+<li><strong>Apply 92.35% factor</strong> — Optional checkbox: multiplies net income by 0.9235 before the rate (Schedule SE uses this on net earnings from self-employment).</li>
+<li><strong>Self-employment tax rate (%)</strong> — Default 15.3% is a common combined placeholder; you can edit it.</li>
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Estimated SE tax ≈ income × (rate ÷ 100)</em> as a single line item.</p>
-<p class="small">Not Schedule SE—ignores wage base limits, half deduction, or additional Medicare tax.</p>`,
+<p><em>Estimated SE tax ≈ (optional 92.35% ×) income × (rate ÷ 100)</em> as one dollar output.</p>
+<p class="small">Still not Schedule SE—ignores Social Security wage base cap, Medicare surtax tiers, and the employer-equivalent deduction.</p>`,
     "side-hustle-income-tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Annual side hustle income</strong> — Extra taxable dollars.</li>
@@ -598,10 +604,10 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <p><em>Net ≈ gross × (1 − (tax% + other%) ÷ 100)</em>.</p>
 <p class="small">Percent-of-gross only; not actual W-4 or benefit elections.</p>`,
     "weight-loss-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
-<ul><li><strong>Start weight</strong> and <strong>goal weight</strong> — Same units (as you enter them).</li></ul>
+<ul><li><strong>Start weight</strong> and <strong>goal weight</strong> — Use the <strong>same units</strong> for both (pounds, kilograms, etc.).</li></ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
-<p><em>Weight to lose ≈ start − goal</em> (subtraction only).</p>
-<p class="small">No timeline, calorie deficit, or health screening—informational subtraction only.</p>`
+<p><em>Difference = start − goal</em>. Positive means the goal is below the start (common “weight to lose” case); negative means the goal is above the start.</p>
+<p class="small">Total body-weight math only—not body fat, lean mass, timelines, or medical advice.</p>`
   };
 
   if (specific[key]) {

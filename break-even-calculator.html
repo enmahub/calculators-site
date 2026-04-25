@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="break-even-calculator.html">
 <head>
-<title>Break Even Calculator (Free) – Calculate Profitability Instantly</title>
-<meta name="description" content="Find your break-even point and determine when your business becomes profitable.">
+<title>Break-Even Calculator (Free) – Units to Cover Fixed Costs</title>
+<meta name="description" content="Estimate how many units you must sell to cover fixed costs using price and variable cost per unit.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/break-even-calculator.html">
@@ -23,10 +23,14 @@
 <div class="wrap">
 <div class="card">
 <h1>Break-Even Calculator</h1>
+<p class="desc">Uses contribution margin per unit: price minus variable cost per unit.</p>
 
-<input id="fixed" placeholder="Fixed costs">
-<input id="price" placeholder="Price per unit">
-<input id="cost" placeholder="Cost per unit">
+<label for="fixed">Fixed costs</label>
+<input id="fixed" type="number" step="any" placeholder="Fixed costs">
+<label for="price">Price per unit</label>
+<input id="price" type="number" step="any" placeholder="Price per unit">
+<label for="cost">Variable cost per unit</label>
+<input id="cost" type="number" step="any" placeholder="Cost per unit">
 
 <button onclick="calc()">Calculate</button>
 
@@ -34,8 +38,25 @@
 
 <script>
 function calc(){
-let units = fixed.value / (price.value - cost.value);
-r.innerHTML = "Break-even units: " + units.toFixed(0);
+  const fixed = parseFloat(document.getElementById("fixed").value);
+  const price = parseFloat(document.getElementById("price").value);
+  const cost = parseFloat(document.getElementById("cost").value);
+  const out = document.getElementById("r");
+  if (!Number.isFinite(fixed) || !Number.isFinite(price) || !Number.isFinite(cost)) {
+    out.innerHTML = "Enter valid numbers for all fields.";
+    return;
+  }
+  if (fixed < 0) {
+    out.innerHTML = "Fixed costs cannot be negative.";
+    return;
+  }
+  const margin = price - cost;
+  if (margin <= 0) {
+    out.innerHTML = "Price per unit must be greater than variable cost per unit (positive contribution margin).";
+    return;
+  }
+  const units = fixed / margin;
+  out.innerHTML = "Break-even units: " + Math.ceil(units);
 }
 </script>
 <details class="methodology-block">
@@ -43,11 +64,11 @@ r.innerHTML = "Break-even units: " + units.toFixed(0);
 <div>
 <h3>What each input means</h3>
 <ul>
-<li><strong>Fixed costs</strong> — Overhead that does not change with each unit sold.</li>
-<li><strong>Price per unit</strong> and <strong>cost per unit</strong> — Used to form contribution margin per unit.</li>
+<li><strong>Fixed costs</strong> — Overhead that does not change with each unit sold (must be ≥ 0).</li>
+<li><strong>Price per unit</strong> and <strong>variable cost per unit</strong> — Contribution margin per unit must be positive (<em>price − cost &gt; 0</em>).</li>
 </ul>
 <h3>Formula used</h3>
-<p><em>Break-even units = fixed costs ÷ (price per unit − cost per unit)</em> when the denominator is positive.</p>
+<p><em>Break-even units = fixed costs ÷ (price per unit − cost per unit)</em>; the page rounds up to the next whole unit.</p>
 <p class="small">Assumes linear unit economics; does not model discounts, capacity limits, or mixed product lines.</p>
 </div>
 </details>

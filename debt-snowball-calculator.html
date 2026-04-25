@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="debt-snowball-calculator.html">
 <head>
-<title>Debt Snowball Calculator - Estimate Debt-Free Timeline</title>
-<meta name="description" content="Estimate payoff time using debt snowball strategy assumptions with total balances and monthly payment budget.">
+<title>Debt Snowball-Style Payoff Estimate - Single Combined Balance</title>
+<meta name="description" content="Estimate months to pay off one combined debt balance at a constant monthly payment and average APR (not a multi-account snowball schedule).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/debt-snowball-calculator.html">
@@ -23,7 +23,7 @@
 <div class="wrap">
 <div class="card">
 <h1>Debt Snowball Calculator</h1>
-<p class="desc">Estimate payoff time by applying extra payment to the smallest balance first.</p>
+<p class="desc">Payoff-time math for <strong>one combined balance</strong> at your average APR and monthly payment. It does not order multiple debts smallest-first—use it as a quick single-loan estimate.</p>
 <label for="totalDebt">Total debt balance</label>
 <input id="totalDebt" type="number" step="any" placeholder="28000">
 <label for="avgApr">Average APR (%)</label>
@@ -57,13 +57,13 @@ function calc(){
 <div>
 <h3>What each input means</h3>
 <ul>
-<li><strong>Total debt balance</strong> — Aggregated balance modeled as one account.</li>
+<li><strong>Total debt balance</strong> — One combined principal modeled as a single amortizing loan (the “snowball” label describes the strategy concept, not smallest-balance ordering in this tool).</li>
 <li><strong>Average APR (%)</strong> — Monthly rate <em>r = APR ÷ 100 ÷ 12</em>.</li>
 <li><strong>Monthly payment budget</strong> — Applied until the balance is paid.</li>
 </ul>
 <h3>Formula used</h3>
 <p>Same payoff-months math as the avalanche page here: one-balance amortization closed form using log of payment ratio.</p>
-<p class="small">Snowball ordering of multiple debts is not simulated—only one combined principal.</p>
+<p class="small">Does not simulate paying smallest balances first across multiple accounts—only one combined principal.</p>
 </div>
 </details>
 <div class="trust-block">

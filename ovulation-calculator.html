@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="ovulation-calculator.html">
 <head>
-<title>Ovulation Calculator (Free) – Predict Fertility Window Instantly</title>
-<meta name="description" content="Estimate your ovulation date based on your last period and cycle length.">
+<title>Ovulation Calculator (Free) – Estimated Ovulation and Fertile Window</title>
+<meta name="description" content="Estimate ovulation from your last period start and cycle length, plus a rough fertile window (not medical advice).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/ovulation-calculator.html">
@@ -23,22 +23,37 @@
 <div class="wrap">
 <div class="card">
 <h1>Ovulation Calculator</h1>
-<p class="desc">Enter the first day of your last period and your usual cycle length.</p>
+<p class="desc">Calendar rule: ovulation ≈ 14 days before your next expected period (last period start + cycle length − 14 days). Shows a rough fertile window around that date.</p>
 
 <label for="last">First day of last period</label>
 <input type="date" id="last">
 <label for="cycle">Cycle length (days)</label>
-<input type="number" id="cycle" placeholder="Cycle length (days)">
+<input type="number" id="cycle" min="1" step="1" placeholder="e.g. 28">
 
 <button onclick="calc()">Calculate</button>
 
 <h2 class="result" id="r">Result: -</h2>
 
 <script>
+function fmt(d) {
+  return d.toLocaleDateString(undefined, { weekday: "short", year: "numeric", month: "short", day: "numeric" });
+}
 function calc(){
-let d = new Date(last.value);
-d.setDate(d.getDate() + (cycle.value - 14));
-r.innerHTML = "Estimated ovulation: " + d.toDateString();
+  const lastVal = document.getElementById("last").value;
+  const cycleDays = parseFloat(document.getElementById("cycle").value);
+  const out = document.getElementById("r");
+  if (!lastVal || !Number.isFinite(cycleDays) || cycleDays <= 0) {
+    out.innerHTML = "Enter your last period start date and a valid cycle length.";
+    return;
+  }
+  const start = new Date(lastVal + "T12:00:00");
+  const ov = new Date(start);
+  ov.setDate(ov.getDate() + Math.round(cycleDays - 14));
+  const winStart = new Date(ov);
+  winStart.setDate(winStart.getDate() - 2);
+  const winEnd = new Date(ov);
+  winEnd.setDate(winEnd.getDate() + 2);
+  out.innerHTML = "Estimated ovulation: " + fmt(ov) + "<br>Approximate fertile window: " + fmt(winStart) + " – " + fmt(winEnd);
 }
 </script>
 <details class="methodology-block">
@@ -50,7 +65,7 @@ r.innerHTML = "Estimated ovulation: " + d.toDateString();
 <li><strong>Cycle length (days)</strong> — Typical menstrual cycle length you enter.</li>
 </ul>
 <h3>Formula used</h3>
-<p>Adds <em>(cycle length − 14)</em> days to the last-period date to approximate mid-cycle ovulation.</p>
+<p>Adds <em>(cycle length − 14)</em> days to the last-period date to approximate ovulation (about two weeks before the next expected period). The page also shows a <strong>rough fertile window</strong> (about two days before through two days after that estimate).</p>
 <p class="small">Simplified calendar estimate—not medical timing or fertility treatment guidance.</p>
 </div>
 </details>
@@ -67,15 +82,19 @@ r.innerHTML = "Estimated ovulation: " + d.toDateString();
 <div class="faq-block">
 <h2>Frequently asked questions</h2>
 <details>
-<summary>Is this calculator result exact?</summary>
-<p>It is an estimate based on your inputs and may differ from official or provider-specific calculations.</p>
+<summary>Is this ovulation date medically exact?</summary>
+<p>No. It uses a simple calendar rule (about 14 days before your next expected period) and is for general planning only—not diagnosis, treatment, or contraception timing.</p>
 </details>
 <details>
-<summary>Can I rely on this for final financial decisions?</summary>
-<p>Use it for planning and verify important numbers with official sources or licensed professionals.</p>
+<summary>What is the fertile window shown here?</summary>
+<p>It is a rough range around the estimated ovulation date (about two days before through two days after). Real fertility varies by person and cycle.</p>
+</details>
+<details>
+<summary>Should I use this instead of talking to a clinician?</summary>
+<p>For health decisions, use professional guidance and not this calculator alone.</p>
 </details>
 </div>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this calculator result exact?","acceptedAnswer":{"@type":"Answer","text":"It is an estimate based on your inputs and may differ from official or provider-specific calculations."}},{"@type":"Question","name":"Can I rely on this for final financial decisions?","acceptedAnswer":{"@type":"Answer","text":"Use it for planning and verify important numbers with official sources or licensed professionals."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this ovulation date medically exact?","acceptedAnswer":{"@type":"Answer","text":"No. It uses a simple calendar rule (about 14 days before your next expected period) and is for general planning only—not diagnosis, treatment, or contraception timing."}},{"@type":"Question","name":"What is the fertile window shown here?","acceptedAnswer":{"@type":"Answer","text":"It is a rough range around the estimated ovulation date (about two days before through two days after). Real fertility varies by person and cycle."}},{"@type":"Question","name":"Should I use this instead of talking to a clinician?","acceptedAnswer":{"@type":"Answer","text":"For health decisions, use professional guidance and not this calculator alone."}}]}</script>
 <p><a href="index.html">Home</a> | <a href="health-calculators.html">Category Hub</a></p>
 <h2>Related Calculators</h2>
 <ul>

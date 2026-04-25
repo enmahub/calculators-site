@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="savings-calculator.html">
 <head>
-<title>Savings Calculator (Free) – Estimate Future Savings Instantly</title>
-<meta name="description" content="Estimate how much your savings will grow over time with this free savings calculator.">
+<title>Savings Calculator (Free) – Optional Growth on Monthly Deposits</title>
+<meta name="description" content="Project a savings balance from a starting amount, monthly deposits, years, and an optional annual return (monthly compounding). Use 0% for contributions only.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/savings-calculator.html">
@@ -23,17 +23,35 @@
 <div class="wrap">
 <div class="card">
 <h1>Savings Calculator</h1>
-
-<input id="m" placeholder="Monthly saving">
-<input id="y" placeholder="Years">
-
+<p class="desc">End-of-month deposits with optional return. Set <strong>Expected annual return</strong> to <strong>0</strong> for the sum of deposits only (plus any starting balance).</p>
+<label for="initial">Starting balance</label>
+<input id="initial" type="number" step="any" value="0">
+<label for="m">Monthly saving</label>
+<input id="m" type="number" step="any" placeholder="200">
+<label for="y">Years</label>
+<input id="y" type="number" step="any" placeholder="10">
+<label for="returnRate">Expected annual return (%)</label>
+<input id="returnRate" type="number" step="any" value="0">
 <button onclick="calc()">Calculate</button>
 <h2 class="result" id="r">Result: -</h2>
-
 <script>
 function calc(){
-let total=m.value*12*y.value;
-r.innerHTML="Total: $"+total;
+  const initial = parseFloat(document.getElementById('initial').value) || 0;
+  const monthly = parseFloat(document.getElementById('m').value) || 0;
+  const years = parseFloat(document.getElementById('y').value);
+  const annual = parseFloat(document.getElementById('returnRate').value);
+  const out = document.getElementById('r');
+  if (!Number.isFinite(years) || years <= 0) {
+    out.innerHTML = 'Enter a valid number of years.';
+    return;
+  }
+  const r = (Number.isFinite(annual) ? annual : 0) / 100 / 12;
+  const n = Math.round(years * 12);
+  let bal = initial;
+  for (let i = 0; i < n; i += 1) {
+    bal = bal * (1 + r) + monthly;
+  }
+  out.innerHTML = 'Estimated balance: $' + bal.toFixed(2);
 }
 </script>
 <details class="methodology-block">
@@ -41,17 +59,19 @@ r.innerHTML="Total: $"+total;
 <div>
 <h3>What each input means</h3>
 <ul>
-<li><strong>Monthly saving</strong> — Amount set aside each month (same value every month).</li>
-<li><strong>Years</strong> — How long you save at that monthly rate.</li>
+<li><strong>Starting balance</strong> — Amount already saved before the first month.</li>
+<li><strong>Monthly saving</strong> — Deposited at the end of each month.</li>
+<li><strong>Years</strong> — Projection length (converted to months).</li>
+<li><strong>Expected annual return (%)</strong> — Nominal rate converted to monthly <em>r = (annual ÷ 100) ÷ 12</em>; use <strong>0</strong> for no growth (contributions only).</li>
 </ul>
 <h3>Formula used</h3>
-<p><em>Total saved = monthly saving × 12 × years</em></p>
-<p class="small">This version does not apply investment returns or interest—only the sum of monthly contributions.</p>
+<p>Month-by-month: <em>balance = balance × (1 + r) + monthly saving</em> for <em>years × 12</em> months.</p>
+<p class="small">Simplified projection—no taxes, fees, contribution limits, or irregular deposits.</p>
 </div>
 </details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
-<p class="desc">This monthly savings total calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<p class="desc">This savings projection calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
 <ul>
 <li>Inputs are user-provided and may include rounding.</li>
 <li>Results are informational and not financial, tax, legal, or medical advice.</li>

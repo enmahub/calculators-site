@@ -23,7 +23,7 @@
 <div class="wrap">
 <div class="card">
 <h1>Extra Payment Loan Calculator</h1>
-<p class="desc">Estimate time and interest savings from extra monthly loan payments.</p>
+<p class="desc">Compare baseline amortization to paying extra each month. Interest totals sum monthly interest until the balance is paid.</p>
 <label for="balance">Loan balance</label>
 <input id="balance" type="number" step="any" placeholder="220000">
 <label for="rate">Annual interest rate (%)</label>
@@ -41,26 +41,52 @@ function payment(principal, annualRate, years){
   if (r === 0) return principal / n;
   return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
 }
+function interestUntilZero(balance, monthlyPay, monthlyRate, maxMonths) {
+  let bal = balance;
+  let totalInt = 0;
+  let m = 0;
+  if (monthlyRate <= 0) {
+    const months = Math.ceil(bal / monthlyPay);
+    return { totalInt: 0, months: months, ok: true };
+  }
+  while (bal > 0.005 && m < maxMonths) {
+    const intPart = bal * monthlyRate;
+    if (monthlyPay <= intPart + 1e-12) {
+      return { totalInt: null, months: m, ok: false };
+    }
+    totalInt += intPart;
+    bal -= monthlyPay - intPart;
+    m++;
+  }
+  return { totalInt, months: m, ok: true };
+}
 function calc(){
   const balance = parseFloat(document.getElementById('balance').value);
   const rate = parseFloat(document.getElementById('rate').value);
   const years = parseFloat(document.getElementById('years').value);
   const extra = parseFloat(document.getElementById('extra').value) || 0;
+  const out = document.getElementById('result');
   if (!Number.isFinite(balance) || !Number.isFinite(rate) || !Number.isFinite(years) || balance <= 0 || years <= 0) {
-    document.getElementById('result').innerHTML = 'Enter valid values.';
+    out.innerHTML = 'Enter valid values.';
     return;
   }
   const base = payment(balance, rate, years);
   const newPay = base + extra;
   const monthlyRate = rate / 100 / 12;
-  const monthsBase = years * 12;
-  if (newPay <= balance * monthlyRate) {
-    document.getElementById('result').innerHTML = 'Extra payment is too low to change payoff.';
+  const monthsBase = Math.round(years * 12);
+  const baseSim = interestUntilZero(balance, base, monthlyRate, monthsBase + 1);
+  if (!baseSim.ok) {
+    out.innerHTML = 'Payment is too low to amortize this loan.';
     return;
   }
-  const monthsNew = Math.log(newPay / (newPay - balance * monthlyRate)) / Math.log(1 + monthlyRate);
-  const savedMonths = monthsBase - monthsNew;
-  document.getElementById('result').innerHTML = 'Base payment: $' + base.toFixed(2) + '<br>New payment: $' + newPay.toFixed(2) + '<br>Estimated time saved: ' + Math.max(0, savedMonths).toFixed(1) + ' months';
+  const newSim = interestUntilZero(balance, newPay, monthlyRate, 600);
+  if (!newSim.ok) {
+    out.innerHTML = 'Extra payment is too low to reduce payoff.';
+    return;
+  }
+  const savedMonths = monthsBase - newSim.months;
+  const savedInterest = baseSim.totalInt - newSim.totalInt;
+  out.innerHTML = 'Base payment: $' + base.toFixed(2) + '<br>New payment: $' + newPay.toFixed(2) + '<br>Estimated time saved: ' + Math.max(0, savedMonths).toFixed(1) + ' months<br>Estimated interest saved: $' + Math.max(0, savedInterest).toFixed(2);
 }
 </script>
 <details class="methodology-block">
@@ -69,10 +95,10 @@ function calc(){
 <h3>What each input means</h3>
 <ul>
 <li><strong>Loan balance, annual rate (%), remaining term (years)</strong> — Used to compute the baseline amortizing payment.</li>
-<li><strong>Extra payment per month</strong> — Added to that payment; payoff months recomputed from the same monthly rate.</li>
+<li><strong>Extra payment per month</strong> — Added to that payment; payoff is simulated month-by-month until the balance is paid.</li>
 </ul>
 <h3>Formula used</h3>
-<p>Baseline payment uses fixed-rate amortization <em>M = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</em> with <em>r</em> monthly and <em>n</em> months. New payoff months from the closed-form log expression with the increased payment.</p>
+<p>Baseline payment uses fixed-rate amortization <em>M = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</em> with <em>r</em> monthly and <em>n</em> months. <strong>Interest totals</strong> sum each month’s <em>balance × r</em> until payoff for the baseline schedule vs the increased-payment schedule.</p>
 <p class="small">Assumes the extra pays down principal immediately; ignores fees, taxes, and escrow.</p>
 </div>
 </details>

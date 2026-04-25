@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="mortgage-affordability-calculator.html">
 <head>
-<title>Mortgage Affordability Calculator - Estimate Home Price Range</title>
-<meta name="description" content="Estimate affordable mortgage payment and home price range based on income, debts, and down payment.">
+<title>Mortgage Affordability Calculator - Payment, Loan, and Price Hint</title>
+<meta name="description" content="Estimate max housing payment and loan size from income, debts, and DTI; optional down payment % suggests a purchase price (PITI and PMI not modeled).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/mortgage-affordability-calculator.html">
@@ -23,7 +23,7 @@
 <div class="wrap">
 <div class="card">
 <h1>Mortgage Affordability Calculator</h1>
-<p class="desc">Estimate affordable monthly housing payment and rough loan size.</p>
+<p class="desc">DTI cap → max mortgage-style payment → loan principal from rate/term. Optional down payment % gives a rough purchase price = loan ÷ (1 − down%). Does not include taxes, insurance, or PMI in the payment.</p>
 <label for="income">Gross monthly income</label>
 <input id="income" type="number" step="any" placeholder="8000">
 <label for="debts">Monthly debt payments</label>
@@ -34,6 +34,8 @@
 <input id="rate" type="number" step="any" value="6.5">
 <label for="years">Loan term (years)</label>
 <input id="years" type="number" step="any" value="30">
+<label for="downPct">Down payment (% of purchase price, optional)</label>
+<input id="downPct" type="number" step="any" value="20" placeholder="e.g. 20">
 <button onclick="calc()">Calculate</button>
 <h2 class="result" id="result">Result: -</h2>
 <script>
@@ -43,19 +45,26 @@ function calc(){
   const targetDti = parseFloat(document.getElementById('targetDti').value) || 0;
   const rate = parseFloat(document.getElementById('rate').value) || 0;
   const years = parseFloat(document.getElementById('years').value) || 30;
+  const downPct = parseFloat(document.getElementById('downPct').value);
+  const out = document.getElementById('result');
   if (!Number.isFinite(income) || income <= 0 || targetDti <= 0) {
-    document.getElementById('result').innerHTML = 'Enter valid values.';
+    out.innerHTML = 'Enter valid values.';
     return;
   }
   const maxHousing = (income * (targetDti / 100)) - debts;
   if (maxHousing <= 0) {
-    document.getElementById('result').innerHTML = 'Current debts leave no room under the selected DTI.';
+    out.innerHTML = 'Current debts leave no room under the selected DTI.';
     return;
   }
   const r = rate / 100 / 12;
   const n = years * 12;
   const loan = r === 0 ? maxHousing * n : maxHousing * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));
-  document.getElementById('result').innerHTML = 'Estimated max housing payment: $' + maxHousing.toFixed(2) + '<br>Approx loan amount: $' + loan.toFixed(2);
+  let html = 'Estimated max housing payment: $' + maxHousing.toFixed(2) + '<br>Approx loan amount: $' + loan.toFixed(2);
+  if (Number.isFinite(downPct) && downPct > 0 && downPct < 100) {
+    const price = loan / (1 - downPct / 100);
+    html += '<br>Approx purchase price if ' + downPct.toFixed(1) + '% down: $' + price.toFixed(2);
+  }
+  out.innerHTML = html;
 }
 </script>
 <details class="methodology-block">
@@ -65,6 +74,7 @@ function calc(){
 <ul>
 <li><strong>Gross monthly income</strong> and <strong>target DTI limit (%)</strong> — Housing budget cap ≈ <em>income × (DTI ÷ 100) − other monthly debts</em>.</li>
 <li><strong>Estimated mortgage rate (%)</strong> and <strong>loan term (years)</strong> — Convert payment capacity into a loan principal using the amortization identity.</li>
+<li><strong>Down payment (% of purchase price)</strong> — Optional; if provided, <em>estimated price ≈ loan ÷ (1 − down% ÷ 100)</em> (loan-only math; not a full cash-to-close).</li>
 </ul>
 <h3>Formula used</h3>
 <p>Payment-to-loan principal: <em>loan ≈ max housing × ((1 + r)<sup>n</sup> − 1) ÷ (r(1 + r)<sup>n</sup>)</em> with monthly <em>r</em> and <em>n = years × 12</em>; if <em>r = 0</em>, <em>loan = max housing × n</em>.</p>

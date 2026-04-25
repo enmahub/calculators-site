@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="debt-payoff.html">
 <head>
-<title>Debt Payoff Calculator (Free) – Calculate Repayment Time Instantly</title>
-<meta name="description" content="Calculate how long it will take to pay off your debt and total interest with this free calculator.">
+<title>Debt Payoff Calculator (Free) – Simple Months-to-Payoff Estimate</title>
+<meta name="description" content="Estimate how many months it would take to clear a balance if the full payment went to principal each month (no interest modeled).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/debt-payoff.html">
@@ -23,17 +23,27 @@
 <div class="wrap">
 <div class="card">
 <h1>Debt Payoff Calculator</h1>
+<p class="desc">Rough timeline only: divides balance by payment. Interest is not included.</p>
 
-<input id="d" placeholder="Debt">
-<input id="p" placeholder="Monthly payment">
+<label for="d">Debt balance</label>
+<input id="d" type="number" step="any" placeholder="Debt">
+<label for="p">Monthly payment</label>
+<input id="p" type="number" step="any" placeholder="Monthly payment">
 
 <button onclick="calc()">Calculate</button>
 <h2 class="result" id="r">Result: -</h2>
 
 <script>
 function calc(){
-let months=d.value/p.value;
-r.innerHTML="Months: "+months.toFixed(0);
+  const debt = parseFloat(document.getElementById("d").value);
+  const pay = parseFloat(document.getElementById("p").value);
+  const out = document.getElementById("r");
+  if (!Number.isFinite(debt) || !Number.isFinite(pay) || debt <= 0 || pay <= 0) {
+    out.innerHTML = "Enter positive debt and monthly payment.";
+    return;
+  }
+  const months = debt / pay;
+  out.innerHTML = "Months: " + months.toFixed(0);
 }
 </script>
 <details class="methodology-block">

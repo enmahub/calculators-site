@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="tip-calculator.html">
 <head>
-<title>Tip Calculator (Free) – Calculate Tips Instantly</title>
-<meta name="description" content="Calculate tips and split bills instantly with this free tip calculator.">
+<title>Tip Calculator (Free) – Gratuity and Optional Split</title>
+<meta name="description" content="Calculate tip dollars, bill plus tip, and optional per-person amounts when splitting among multiple people.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/tip-calculator.html">
@@ -23,17 +23,33 @@
 <div class="wrap">
 <div class="card">
 <h1>Tip Calculator</h1>
-
-<input id="bill" placeholder="Bill">
-<input id="tip" placeholder="Tip %">
-
+<p class="desc">Tip on the pre-tax bill you enter. Add people to see per-person totals.</p>
+<label for="bill">Bill amount</label>
+<input id="bill" type="number" step="any" placeholder="Bill">
+<label for="tip">Tip (%)</label>
+<input id="tip" type="number" step="any" placeholder="Tip %">
+<label for="people">People splitting (optional)</label>
+<input id="people" type="number" min="1" step="1" value="1">
 <button onclick="calc()">Calculate</button>
 <h2 class="result" id="r">Result: -</h2>
-
 <script>
 function calc(){
-let t=bill.value*(tip.value/100);
-r.innerHTML="Tip: $"+t;
+  const bill = parseFloat(document.getElementById('bill').value);
+  const tipPct = parseFloat(document.getElementById('tip').value);
+  let people = parseInt(document.getElementById('people').value, 10);
+  const out = document.getElementById('r');
+  if (!Number.isFinite(bill) || !Number.isFinite(tipPct) || bill < 0) {
+    out.innerHTML = 'Enter a valid bill and tip percentage.';
+    return;
+  }
+  if (!Number.isFinite(people) || people < 1) people = 1;
+  const tipAmt = bill * (tipPct / 100);
+  const total = bill + tipAmt;
+  let html = 'Tip: $' + tipAmt.toFixed(2) + '<br>Bill + tip: $' + total.toFixed(2);
+  if (people > 1) {
+    html += '<br>Per person (bill + tip): $' + (total / people).toFixed(2) + '<br>Tip per person: $' + (tipAmt / people).toFixed(2);
+  }
+  out.innerHTML = html;
 }
 </script>
 <details class="methodology-block">
@@ -43,10 +59,11 @@ r.innerHTML="Tip: $"+t;
 <ul>
 <li><strong>Bill</strong> — Check amount before tip.</li>
 <li><strong>Tip %</strong> — Percent of the bill you want as gratuity.</li>
+<li><strong>People splitting bill</strong> — Optional; when greater than 1, the page shows per-person totals.</li>
 </ul>
 <h3>Formula used</h3>
-<p><em>Tip ($) = bill × (tip% ÷ 100)</em></p>
-<p class="small">The result line shows the tip in dollars only (not bill + tip).</p>
+<p><em>Tip = bill × (tip% ÷ 100)</em>; <em>bill + tip</em> for the full check; per-person lines divide by the people count.</p>
+<p class="small">Does not add tax lines or itemize service charges—numbers are as you enter them.</p>
 </div>
 </details>
 <div class="trust-block">

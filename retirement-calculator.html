@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="retirement-calculator.html">
 <head>
-<title>Retirement Calculator (Free) – Estimate Future Savings Instantly</title>
-<meta name="description" content="Calculate how much you need for retirement and estimate your future savings instantly.">
+<title>Retirement Savings Calculator (Free) – Simple Growth Projection</title>
+<meta name="description" content="Project a retirement balance from current savings, monthly contributions, years, and an optional annual return (monthly compounding).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/retirement-calculator.html">
@@ -23,10 +23,16 @@
 <div class="wrap">
 <div class="card">
 <h1>Retirement Savings Calculator</h1>
+<p class="desc">End-of-month contributions with optional investment growth. Set return to 0% for contributions only.</p>
 
-<input id="current" placeholder="Current savings">
-<input id="monthly" placeholder="Monthly contribution">
-<input id="years" placeholder="Years">
+<label for="current">Current savings</label>
+<input id="current" type="number" step="any" placeholder="Current savings">
+<label for="monthly">Monthly contribution</label>
+<input id="monthly" type="number" step="any" placeholder="Monthly contribution">
+<label for="years">Years</label>
+<input id="years" type="number" step="any" placeholder="Years">
+<label for="returnRate">Expected annual return (%)</label>
+<input id="returnRate" type="number" step="any" value="0" placeholder="0 for no growth">
 
 <button onclick="calc()">Calculate</button>
 
@@ -34,8 +40,22 @@
 
 <script>
 function calc(){
-let total = Number(current.value) + (monthly.value * 12 * years.value);
-r.innerHTML = "Total: $" + total.toFixed(2);
+  const cur = parseFloat(document.getElementById("current").value) || 0;
+  const monthly = parseFloat(document.getElementById("monthly").value) || 0;
+  const years = parseFloat(document.getElementById("years").value);
+  const annual = parseFloat(document.getElementById("returnRate").value);
+  const out = document.getElementById("r");
+  if (!Number.isFinite(years) || years <= 0) {
+    out.innerHTML = "Enter a valid number of years.";
+    return;
+  }
+  const r = (Number.isFinite(annual) ? annual : 0) / 100 / 12;
+  const n = Math.round(years * 12);
+  let bal = cur;
+  for (let i = 0; i < n; i += 1) {
+    bal = bal * (1 + r) + monthly;
+  }
+  out.innerHTML = "Estimated balance: $" + bal.toFixed(2);
 }
 </script>
 <details class="methodology-block">
@@ -43,18 +63,19 @@ r.innerHTML = "Total: $" + total.toFixed(2);
 <div>
 <h3>What each input means</h3>
 <ul>
-<li><strong>Current savings</strong> — Starting balance.</li>
-<li><strong>Monthly contribution</strong> — Multiplied by <em>12 × years</em> in the page script.</li>
-<li><strong>Years</strong> — Horizon length.</li>
+<li><strong>Current savings</strong> — Starting balance before monthly contributions.</li>
+<li><strong>Monthly contribution</strong> — Added at the end of each month in the simulation.</li>
+<li><strong>Years</strong> — Number of years to project (converted to months).</li>
+<li><strong>Expected annual return (%)</strong> — Nominal rate converted to a monthly rate <em>r = (annual ÷ 100) ÷ 12</em>; use <strong>0</strong> for no growth (contributions only).</li>
 </ul>
 <h3>Formula used</h3>
-<p>As coded: <em>Total shown ≈ current savings + (monthly × 12 × years)</em>—a sum of contributions without investment growth.</p>
-<p class="small">Not a future-value-of-savings model; see the 401(k) tool for growth assumptions.</p>
+<p>Month-by-month: <em>balance = balance × (1 + r) + monthly contribution</em> for <em>years × 12</em> months. This is a simplified projection, not tax-adjusted or inflation-adjusted.</p>
+<p class="small">Does not model employer match, contribution limits, or withdrawals; compare with the 401(k) tool for salary-percent contribution patterns.</p>
 </div>
 </details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
-<p class="desc">This retirement savings sum calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<p class="desc">This retirement savings projection calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
 <ul>
 <li>Inputs are user-provided and may include rounding.</li>
 <li>Results are informational and not financial, tax, legal, or medical advice.</li>

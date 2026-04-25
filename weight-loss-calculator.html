@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="weight-loss-calculator.html">
 <head>
-<title>Weight Loss Calculator (Free) – Estimate Fat Loss Instantly</title>
-<meta name="description" content="Calculate how much weight you need to lose and plan your goals effectively.">
+<title>Weight Goal Gap Calculator (Free) – Start Minus Goal</title>
+<meta name="description" content="Find the numeric difference between start and goal weight in the same units (not body fat or a medical plan).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/weight-loss-calculator.html">
@@ -23,28 +23,40 @@
 <div class="wrap">
 <div class="card">
 <h1>Weight Loss Calculator</h1>
-
-<input id="start" placeholder="Start weight">
-<input id="end" placeholder="Goal weight">
-
+<p class="desc">Uses the same units for both fields (lb, kg, etc.). Shows start minus goal; positive usually means weight to lose if your goal is lower.</p>
+<label for="start">Start weight</label>
+<input id="start" type="number" step="any" placeholder="Start weight">
+<label for="end">Goal weight</label>
+<input id="end" type="number" step="any" placeholder="Goal weight">
 <button onclick="calc()">Calculate</button>
-
 <h2 class="result" id="r">Result: -</h2>
-
 <script>
 function calc(){
-let loss = start.value - end.value;
-r.innerHTML = "Weight to lose: " + loss;
+  const start = parseFloat(document.getElementById('start').value);
+  const goal = parseFloat(document.getElementById('end').value);
+  const out = document.getElementById('r');
+  if (!Number.isFinite(start) || !Number.isFinite(goal)) {
+    out.innerHTML = 'Enter numeric start and goal weights.';
+    return;
+  }
+  const diff = start - goal;
+  if (diff > 0) {
+    out.innerHTML = 'Weight to lose: ' + diff.toFixed(1) + ' (same units you entered)';
+  } else if (diff < 0) {
+    out.innerHTML = 'Goal is ' + (-diff).toFixed(1) + ' above start (same units)';
+  } else {
+    out.innerHTML = 'Start and goal are the same.';
+  }
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<ul><li><strong>Start weight</strong> and <strong>goal weight</strong> — Same units (as you enter them).</li></ul>
+<ul><li><strong>Start weight</strong> and <strong>goal weight</strong> — Use the <strong>same units</strong> for both (pounds, kilograms, etc.).</li></ul>
 <h3>Formula used</h3>
-<p><em>Weight to lose ≈ start − goal</em> (subtraction only).</p>
-<p class="small">No timeline, calorie deficit, or health screening—informational subtraction only.</p>
+<p><em>Difference = start − goal</em>. Positive means the goal is below the start (common “weight to lose” case); negative means the goal is above the start.</p>
+<p class="small">Total body-weight math only—not body fat, lean mass, timelines, or medical advice.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -60,15 +72,19 @@ r.innerHTML = "Weight to lose: " + loss;
 <div class="faq-block">
 <h2>Frequently asked questions</h2>
 <details>
-<summary>Is this calculator result exact?</summary>
-<p>It is an estimate based on your inputs and may differ from official or provider-specific calculations.</p>
+<summary>Does this measure body fat loss?</summary>
+<p>No. It only subtracts your goal weight from your start weight in the units you enter. It does not estimate fat mass, muscle change, or health risk.</p>
 </details>
 <details>
-<summary>Can I rely on this for final financial decisions?</summary>
-<p>Use it for planning and verify important numbers with official sources or licensed professionals.</p>
+<summary>What if my goal weight is higher than my start weight?</summary>
+<p>The result is a negative number (weight gain in the same units). The tool is a numeric difference only—not a diet or treatment plan.</p>
+</details>
+<details>
+<summary>Can I use this for medical decisions?</summary>
+<p>No. It is for quick illustration only. For nutrition or medical goals, consult a qualified professional.</p>
 </details>
 </div>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this calculator result exact?","acceptedAnswer":{"@type":"Answer","text":"It is an estimate based on your inputs and may differ from official or provider-specific calculations."}},{"@type":"Question","name":"Can I rely on this for final financial decisions?","acceptedAnswer":{"@type":"Answer","text":"Use it for planning and verify important numbers with official sources or licensed professionals."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does this measure body fat loss?","acceptedAnswer":{"@type":"Answer","text":"No. It only subtracts your goal weight from your start weight in the units you enter. It does not estimate fat mass, muscle change, or health risk."}},{"@type":"Question","name":"What if my goal weight is higher than my start weight?","acceptedAnswer":{"@type":"Answer","text":"The result is a negative number (weight gain in the same units). The tool is a numeric difference only—not a diet or treatment plan."}},{"@type":"Question","name":"Can I use this for medical decisions?","acceptedAnswer":{"@type":"Answer","text":"No. It is for quick illustration only. For nutrition or medical goals, consult a qualified professional."}}]}</script>
 <p><a href="index.html">Home</a> | <a href="health-calculators.html">Category Hub</a></p>
 <h2>Related Calculators</h2>
 <ul>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="interest-rate-calculator.html">
 <head>
-<title>Interest Rate Calculator (Free) – Calculate Interest Instantly</title>
-<meta name="description" content="Calculate simple interest based on principal, rate, and time with this free calculator.">
+<title>Simple Interest Calculator (Free) – Principal, Rate, and Time</title>
+<meta name="description" content="Calculate simple interest in dollars from principal, annual rate, and time in years (no compounding).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/interest-rate-calculator.html">
@@ -23,10 +23,14 @@
 <div class="wrap">
 <div class="card">
 <h1>Simple Interest Calculator</h1>
+<p class="desc">Interest = principal × (annual rate ÷ 100) × years. Not compound interest.</p>
 
-<input id="p" placeholder="Principal">
-<input  id="r" placeholder="Rate %">
-<input id="t" placeholder="Time (years)">
+<label for="p">Principal</label>
+<input id="p" type="number" step="any" placeholder="Principal">
+<label for="r">Annual rate (%)</label>
+<input id="r" type="number" step="any" placeholder="Rate %">
+<label for="t">Time (years)</label>
+<input id="t" type="number" step="any" placeholder="Time (years)">
 
 <button onclick="calc()">Calculate</button>
 
@@ -34,8 +38,16 @@
 
 <script>
 function calc(){
-let interest = p.value * (r.value/100) * t.value;
-document.getElementById("result").innerHTML = "Interest: $" + interest.toFixed(2);
+  const principal = parseFloat(document.getElementById("p").value);
+  const rate = parseFloat(document.getElementById("r").value);
+  const time = parseFloat(document.getElementById("t").value);
+  const el = document.getElementById("result");
+  if (!Number.isFinite(principal) || !Number.isFinite(rate) || !Number.isFinite(time)) {
+    el.innerHTML = "Enter valid numbers for principal, rate, and time.";
+    return;
+  }
+  const interest = principal * (rate / 100) * time;
+  el.innerHTML = "Interest: $" + interest.toFixed(2);
 }
 </script>
 <details class="methodology-block">

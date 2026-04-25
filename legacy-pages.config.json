@@ -35,12 +35,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Break Even Calculator (Free) – Calculate Profitability Instantly",
-      "description": "Find your break-even point and determine when your business becomes profitable.",
+      "title": "Break-Even Calculator (Free) – Units to Cover Fixed Costs",
+      "description": "Estimate how many units you must sell to cover fixed costs using price and variable cost per unit.",
       "h1": "Break-Even Calculator",
       "trustTopic": "break-even unit calculator",
       "indexable": true,
-      "body": "<h1>Break-Even Calculator</h1>\r\n\r\n<input id=\"fixed\" placeholder=\"Fixed costs\">\r\n<input id=\"price\" placeholder=\"Price per unit\">\r\n<input id=\"cost\" placeholder=\"Cost per unit\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet units = fixed.value / (price.value - cost.value);\r\nr.innerHTML = \"Break-even units: \" + units.toFixed(0);\r\n}\r\n</script>"
+      "body": "<h1>Break-Even Calculator</h1>\r\n<p class=\"desc\">Uses contribution margin per unit: price minus variable cost per unit.</p>\r\n\r\n<label for=\"fixed\">Fixed costs</label>\r\n<input id=\"fixed\" type=\"number\" step=\"any\" placeholder=\"Fixed costs\">\r\n<label for=\"price\">Price per unit</label>\r\n<input id=\"price\" type=\"number\" step=\"any\" placeholder=\"Price per unit\">\r\n<label for=\"cost\">Variable cost per unit</label>\r\n<input id=\"cost\" type=\"number\" step=\"any\" placeholder=\"Cost per unit\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\n  const fixed = parseFloat(document.getElementById(\"fixed\").value);\r\n  const price = parseFloat(document.getElementById(\"price\").value);\r\n  const cost = parseFloat(document.getElementById(\"cost\").value);\r\n  const out = document.getElementById(\"r\");\r\n  if (!Number.isFinite(fixed) || !Number.isFinite(price) || !Number.isFinite(cost)) {\r\n    out.innerHTML = \"Enter valid numbers for all fields.\";\r\n    return;\r\n  }\r\n  if (fixed < 0) {\r\n    out.innerHTML = \"Fixed costs cannot be negative.\";\r\n    return;\r\n  }\r\n  const margin = price - cost;\r\n  if (margin <= 0) {\r\n    out.innerHTML = \"Price per unit must be greater than variable cost per unit (positive contribution margin).\";\r\n    return;\r\n  }\r\n  const units = fixed / margin;\r\n  out.innerHTML = \"Break-even units: \" + Math.ceil(units);\r\n}\r\n</script>"
     },
     {
       "fileName": "calorie-calculator.html",
@@ -91,12 +91,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Debt Payoff Calculator (Free) – Calculate Repayment Time Instantly",
-      "description": "Calculate how long it will take to pay off your debt and total interest with this free calculator.",
+      "title": "Debt Payoff Calculator (Free) – Simple Months-to-Payoff Estimate",
+      "description": "Estimate how many months it would take to clear a balance if the full payment went to principal each month (no interest modeled).",
       "h1": "Debt Payoff Calculator",
       "trustTopic": "debt payoff timeline calculator",
       "indexable": true,
-      "body": "<h1>Debt Payoff Calculator</h1>\r\n\r\n<input id=\"d\" placeholder=\"Debt\">\r\n<input id=\"p\" placeholder=\"Monthly payment\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet months=d.value/p.value;\r\nr.innerHTML=\"Months: \"+months.toFixed(0);\r\n}\r\n</script>"
+      "body": "<h1>Debt Payoff Calculator</h1>\r\n<p class=\"desc\">Rough timeline only: divides balance by payment. Interest is not included.</p>\r\n\r\n<label for=\"d\">Debt balance</label>\r\n<input id=\"d\" type=\"number\" step=\"any\" placeholder=\"Debt\">\r\n<label for=\"p\">Monthly payment</label>\r\n<input id=\"p\" type=\"number\" step=\"any\" placeholder=\"Monthly payment\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\n  const debt = parseFloat(document.getElementById(\"d\").value);\r\n  const pay = parseFloat(document.getElementById(\"p\").value);\r\n  const out = document.getElementById(\"r\");\r\n  if (!Number.isFinite(debt) || !Number.isFinite(pay) || debt <= 0 || pay <= 0) {\r\n    out.innerHTML = \"Enter positive debt and monthly payment.\";\r\n    return;\r\n  }\r\n  const months = debt / pay;\r\n  out.innerHTML = \"Months: \" + months.toFixed(0);\r\n}\r\n</script>"
     },
     {
       "fileName": "discount-calculator.html",
@@ -161,12 +161,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Interest Rate Calculator (Free) – Calculate Interest Instantly",
-      "description": "Calculate simple interest based on principal, rate, and time with this free calculator.",
+      "title": "Simple Interest Calculator (Free) – Principal, Rate, and Time",
+      "description": "Calculate simple interest in dollars from principal, annual rate, and time in years (no compounding).",
       "h1": "Simple Interest Calculator",
       "trustTopic": "simple interest calculator",
       "indexable": true,
-      "body": "<h1>Simple Interest Calculator</h1>\r\n\r\n<input id=\"p\" placeholder=\"Principal\">\r\n<input  id=\"r\" placeholder=\"Rate %\">\r\n<input id=\"t\" placeholder=\"Time (years)\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet interest = p.value * (r.value/100) * t.value;\r\ndocument.getElementById(\"result\").innerHTML = \"Interest: $\" + interest.toFixed(2);\r\n}\r\n</script>"
+      "body": "<h1>Simple Interest Calculator</h1>\r\n<p class=\"desc\">Interest = principal × (annual rate ÷ 100) × years. Not compound interest.</p>\r\n\r\n<label for=\"p\">Principal</label>\r\n<input id=\"p\" type=\"number\" step=\"any\" placeholder=\"Principal\">\r\n<label for=\"r\">Annual rate (%)</label>\r\n<input id=\"r\" type=\"number\" step=\"any\" placeholder=\"Rate %\">\r\n<label for=\"t\">Time (years)</label>\r\n<input id=\"t\" type=\"number\" step=\"any\" placeholder=\"Time (years)\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\n  const principal = parseFloat(document.getElementById(\"p\").value);\r\n  const rate = parseFloat(document.getElementById(\"r\").value);\r\n  const time = parseFloat(document.getElementById(\"t\").value);\r\n  const el = document.getElementById(\"result\");\r\n  if (!Number.isFinite(principal) || !Number.isFinite(rate) || !Number.isFinite(time)) {\r\n    el.innerHTML = \"Enter valid numbers for principal, rate, and time.\";\r\n    return;\r\n  }\r\n  const interest = principal * (rate / 100) * time;\r\n  el.innerHTML = \"Interest: $\" + interest.toFixed(2);\r\n}\r\n</script>"
     },
     {
       "fileName": "kilograms-to-pounds-converter.html",
@@ -203,8 +203,8 @@
       "marketId": "en",
       "category": "Conversions",
       "hubPath": "conversion-calculators.html",
-      "title": "Liters to Gallons Converter (Free)",
-      "description": "Convert liters to gallons and gallons to liters instantly with this free bidirectional converter.",
+      "title": "Liters to US Gallons Converter (Free)",
+      "description": "Convert liters to US gallons and US gallons to liters with this free bidirectional converter.",
       "h1": "Liters and Gallons Converter",
       "trustTopic": "liters and US gallons converter",
       "indexable": true,
@@ -273,12 +273,12 @@
       "marketId": "en",
       "category": "Health",
       "hubPath": "health-calculators.html",
-      "title": "Ovulation Calculator (Free) – Predict Fertility Window Instantly",
-      "description": "Estimate your ovulation date based on your last period and cycle length.",
+      "title": "Ovulation Calculator (Free) – Estimated Ovulation and Fertile Window",
+      "description": "Estimate ovulation from your last period start and cycle length, plus a rough fertile window (not medical advice).",
       "h1": "Ovulation Calculator",
       "trustTopic": "cycle-based ovulation estimator",
       "indexable": true,
-      "body": "<h1>Ovulation Calculator</h1>\r\n<p class=\"desc\">Enter the first day of your last period and your usual cycle length.</p>\r\n\r\n<label for=\"last\">First day of last period</label>\r\n<input type=\"date\" id=\"last\">\r\n<label for=\"cycle\">Cycle length (days)</label>\r\n<input type=\"number\" id=\"cycle\" placeholder=\"Cycle length (days)\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet d = new Date(last.value);\r\nd.setDate(d.getDate() + (cycle.value - 14));\r\nr.innerHTML = \"Estimated ovulation: \" + d.toDateString();\r\n}\r\n</script>"
+      "body": "<h1>Ovulation Calculator</h1>\r\n<p class=\"desc\">Calendar rule: ovulation ≈ 14 days before your next expected period (last period start + cycle length − 14 days). Shows a rough fertile window around that date.</p>\r\n\r\n<label for=\"last\">First day of last period</label>\r\n<input type=\"date\" id=\"last\">\r\n<label for=\"cycle\">Cycle length (days)</label>\r\n<input type=\"number\" id=\"cycle\" min=\"1\" step=\"1\" placeholder=\"e.g. 28\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction fmt(d) {\r\n  return d.toLocaleDateString(undefined, { weekday: \"short\", year: \"numeric\", month: \"short\", day: \"numeric\" });\r\n}\r\nfunction calc(){\r\n  const lastVal = document.getElementById(\"last\").value;\r\n  const cycleDays = parseFloat(document.getElementById(\"cycle\").value);\r\n  const out = document.getElementById(\"r\");\r\n  if (!lastVal || !Number.isFinite(cycleDays) || cycleDays <= 0) {\r\n    out.innerHTML = \"Enter your last period start date and a valid cycle length.\";\r\n    return;\r\n  }\r\n  const start = new Date(lastVal + \"T12:00:00\");\r\n  const ov = new Date(start);\r\n  ov.setDate(ov.getDate() + Math.round(cycleDays - 14));\r\n  const winStart = new Date(ov);\r\n  winStart.setDate(winStart.getDate() - 2);\r\n  const winEnd = new Date(ov);\r\n  winEnd.setDate(winEnd.getDate() + 2);\r\n  out.innerHTML = \"Estimated ovulation: \" + fmt(ov) + \"<br>Approximate fertile window: \" + fmt(winStart) + \" – \" + fmt(winEnd);\r\n}\r\n</script>"
     },
     {
       "fileName": "percentage-calculator.html",
@@ -315,12 +315,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Retirement Calculator (Free) – Estimate Future Savings Instantly",
-      "description": "Calculate how much you need for retirement and estimate your future savings instantly.",
+      "title": "Retirement Savings Calculator (Free) – Simple Growth Projection",
+      "description": "Project a retirement balance from current savings, monthly contributions, years, and an optional annual return (monthly compounding).",
       "h1": "Retirement Savings Calculator",
-      "trustTopic": "retirement savings sum calculator",
+      "trustTopic": "retirement savings projection calculator",
       "indexable": true,
-      "body": "<h1>Retirement Savings Calculator</h1>\r\n\r\n<input id=\"current\" placeholder=\"Current savings\">\r\n<input id=\"monthly\" placeholder=\"Monthly contribution\">\r\n<input id=\"years\" placeholder=\"Years\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet total = Number(current.value) + (monthly.value * 12 * years.value);\r\nr.innerHTML = \"Total: $\" + total.toFixed(2);\r\n}\r\n</script>"
+      "body": "<h1>Retirement Savings Calculator</h1>\r\n<p class=\"desc\">End-of-month contributions with optional investment growth. Set return to 0% for contributions only.</p>\r\n\r\n<label for=\"current\">Current savings</label>\r\n<input id=\"current\" type=\"number\" step=\"any\" placeholder=\"Current savings\">\r\n<label for=\"monthly\">Monthly contribution</label>\r\n<input id=\"monthly\" type=\"number\" step=\"any\" placeholder=\"Monthly contribution\">\r\n<label for=\"years\">Years</label>\r\n<input id=\"years\" type=\"number\" step=\"any\" placeholder=\"Years\">\r\n<label for=\"returnRate\">Expected annual return (%)</label>\r\n<input id=\"returnRate\" type=\"number\" step=\"any\" value=\"0\" placeholder=\"0 for no growth\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\n  const cur = parseFloat(document.getElementById(\"current\").value) || 0;\r\n  const monthly = parseFloat(document.getElementById(\"monthly\").value) || 0;\r\n  const years = parseFloat(document.getElementById(\"years\").value);\r\n  const annual = parseFloat(document.getElementById(\"returnRate\").value);\r\n  const out = document.getElementById(\"r\");\r\n  if (!Number.isFinite(years) || years <= 0) {\r\n    out.innerHTML = \"Enter a valid number of years.\";\r\n    return;\r\n  }\r\n  const r = (Number.isFinite(annual) ? annual : 0) / 100 / 12;\r\n  const n = Math.round(years * 12);\r\n  let bal = cur;\r\n  for (let i = 0; i < n; i += 1) {\r\n    bal = bal * (1 + r) + monthly;\r\n  }\r\n  out.innerHTML = \"Estimated balance: $\" + bal.toFixed(2);\r\n}\r\n</script>"
     },
     {
       "fileName": "salary-calculator.html",
@@ -343,12 +343,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Savings Calculator (Free) – Estimate Future Savings Instantly",
-      "description": "Estimate how much your savings will grow over time with this free savings calculator.",
+      "title": "Savings Calculator (Free) – Optional Growth on Monthly Deposits",
+      "description": "Project a savings balance from a starting amount, monthly deposits, years, and an optional annual return (monthly compounding). Use 0% for contributions only.",
       "h1": "Savings Calculator",
-      "trustTopic": "monthly savings total calculator",
+      "trustTopic": "savings projection calculator",
       "indexable": true,
-      "body": "<h1>Savings Calculator</h1>\r\n\r\n<input id=\"m\" placeholder=\"Monthly saving\">\r\n<input id=\"y\" placeholder=\"Years\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet total=m.value*12*y.value;\r\nr.innerHTML=\"Total: $\"+total;\r\n}\r\n</script>"
+      "body": "<h1>Savings Calculator</h1>\n<p class=\"desc\">End-of-month deposits with optional return. Set <strong>Expected annual return</strong> to <strong>0</strong> for the sum of deposits only (plus any starting balance).</p>\n<label for=\"initial\">Starting balance</label>\n<input id=\"initial\" type=\"number\" step=\"any\" value=\"0\">\n<label for=\"m\">Monthly saving</label>\n<input id=\"m\" type=\"number\" step=\"any\" placeholder=\"200\">\n<label for=\"y\">Years</label>\n<input id=\"y\" type=\"number\" step=\"any\" placeholder=\"10\">\n<label for=\"returnRate\">Expected annual return (%)</label>\n<input id=\"returnRate\" type=\"number\" step=\"any\" value=\"0\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"r\">Result: -</h2>\n<script>\nfunction calc(){\n  const initial = parseFloat(document.getElementById('initial').value) || 0;\n  const monthly = parseFloat(document.getElementById('m').value) || 0;\n  const years = parseFloat(document.getElementById('y').value);\n  const annual = parseFloat(document.getElementById('returnRate').value);\n  const out = document.getElementById('r');\n  if (!Number.isFinite(years) || years <= 0) {\n    out.innerHTML = 'Enter a valid number of years.';\n    return;\n  }\n  const r = (Number.isFinite(annual) ? annual : 0) / 100 / 12;\n  const n = Math.round(years * 12);\n  let bal = initial;\n  for (let i = 0; i < n; i += 1) {\n    bal = bal * (1 + r) + monthly;\n  }\n  out.innerHTML = 'Estimated balance: $' + bal.toFixed(2);\n}\n</script>"
     },
     {
       "fileName": "seconds-to-minutes-converter.html",
@@ -371,12 +371,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Tax Calculator (Free) – Estimate Taxes Instantly",
-      "description": "Calculate income tax quickly and estimate how much you owe with this free tax calculator.",
+      "title": "Flat-Rate Income Tax Calculator (Free) – Quick Dollar Estimate",
+      "description": "Multiply income by one tax percentage you choose for a rough tax dollar estimate—not a full tax return or withholding model.",
       "h1": "Tax Calculator",
       "trustTopic": "flat-rate income tax estimator",
       "indexable": true,
-      "body": "<h1>Tax Calculator</h1>\r\n\r\n<input id=\"income\" placeholder=\"Income\">\r\n<input id=\"tax\" placeholder=\"Tax %\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet t = income.value * (tax.value / 100);\r\nr.innerHTML = \"Tax: $\" + t.toFixed(2);\r\ndocument.dispatchEvent(new CustomEvent(\"pc:calculator_result\", { detail: { type: \"tax\" } }));\r\n}\r\n</script>"
+      "body": "<h1>Tax Calculator</h1>\n<p class=\"desc\">One rate × income. No brackets, deductions, or credits.</p>\n<label for=\"income\">Income</label>\n<input id=\"income\" type=\"number\" step=\"any\" placeholder=\"Income\">\n<label for=\"tax\">Tax rate (%)</label>\n<input id=\"tax\" type=\"number\" step=\"any\" placeholder=\"Tax %\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"r\">Result: -</h2>\n<script>\nfunction calc(){\n  const income = parseFloat(document.getElementById('income').value);\n  const rate = parseFloat(document.getElementById('tax').value);\n  const out = document.getElementById('r');\n  if (!Number.isFinite(income) || !Number.isFinite(rate)) {\n    out.innerHTML = 'Enter valid income and tax rate.';\n    return;\n  }\n  const t = income * (rate / 100);\n  out.innerHTML = 'Estimated tax: $' + t.toFixed(2);\n  document.dispatchEvent(new CustomEvent('pc:calculator_result', { detail: { type: 'tax' } }));\n}\n</script>"
     },
     {
       "fileName": "tip-calculator.html",
@@ -385,12 +385,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Tip Calculator (Free) – Calculate Tips Instantly",
-      "description": "Calculate tips and split bills instantly with this free tip calculator.",
+      "title": "Tip Calculator (Free) – Gratuity and Optional Split",
+      "description": "Calculate tip dollars, bill plus tip, and optional per-person amounts when splitting among multiple people.",
       "h1": "Tip Calculator",
       "trustTopic": "tip amount calculator",
       "indexable": true,
-      "body": "<h1>Tip Calculator</h1>\r\n\r\n<input id=\"bill\" placeholder=\"Bill\">\r\n<input id=\"tip\" placeholder=\"Tip %\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet t=bill.value*(tip.value/100);\r\nr.innerHTML=\"Tip: $\"+t;\r\n}\r\n</script>"
+      "body": "<h1>Tip Calculator</h1>\n<p class=\"desc\">Tip on the pre-tax bill you enter. Add people to see per-person totals.</p>\n<label for=\"bill\">Bill amount</label>\n<input id=\"bill\" type=\"number\" step=\"any\" placeholder=\"Bill\">\n<label for=\"tip\">Tip (%)</label>\n<input id=\"tip\" type=\"number\" step=\"any\" placeholder=\"Tip %\">\n<label for=\"people\">People splitting (optional)</label>\n<input id=\"people\" type=\"number\" min=\"1\" step=\"1\" value=\"1\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"r\">Result: -</h2>\n<script>\nfunction calc(){\n  const bill = parseFloat(document.getElementById('bill').value);\n  const tipPct = parseFloat(document.getElementById('tip').value);\n  let people = parseInt(document.getElementById('people').value, 10);\n  const out = document.getElementById('r');\n  if (!Number.isFinite(bill) || !Number.isFinite(tipPct) || bill < 0) {\n    out.innerHTML = 'Enter a valid bill and tip percentage.';\n    return;\n  }\n  if (!Number.isFinite(people) || people < 1) people = 1;\n  const tipAmt = bill * (tipPct / 100);\n  const total = bill + tipAmt;\n  let html = 'Tip: $' + tipAmt.toFixed(2) + '<br>Bill + tip: $' + total.toFixed(2);\n  if (people > 1) {\n    html += '<br>Per person (bill + tip): $' + (total / people).toFixed(2) + '<br>Tip per person: $' + (tipAmt / people).toFixed(2);\n  }\n  out.innerHTML = html;\n}\n</script>"
     },
     {
       "fileName": "weight-loss-calculator.html",
@@ -399,12 +399,12 @@
       "marketId": "en",
       "category": "Health",
       "hubPath": "health-calculators.html",
-      "title": "Weight Loss Calculator (Free) – Estimate Fat Loss Instantly",
-      "description": "Calculate how much weight you need to lose and plan your goals effectively.",
+      "title": "Weight Goal Gap Calculator (Free) – Start Minus Goal",
+      "description": "Find the numeric difference between start and goal weight in the same units (not body fat or a medical plan).",
       "h1": "Weight Loss Calculator",
       "trustTopic": "weight-difference calculator",
       "indexable": true,
-      "body": "<h1>Weight Loss Calculator</h1>\r\n\r\n<input id=\"start\" placeholder=\"Start weight\">\r\n<input id=\"end\" placeholder=\"Goal weight\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet loss = start.value - end.value;\r\nr.innerHTML = \"Weight to lose: \" + loss;\r\n}\r\n</script>"
+      "body": "<h1>Weight Loss Calculator</h1>\n<p class=\"desc\">Uses the same units for both fields (lb, kg, etc.). Shows start minus goal; positive usually means weight to lose if your goal is lower.</p>\n<label for=\"start\">Start weight</label>\n<input id=\"start\" type=\"number\" step=\"any\" placeholder=\"Start weight\">\n<label for=\"end\">Goal weight</label>\n<input id=\"end\" type=\"number\" step=\"any\" placeholder=\"Goal weight\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"r\">Result: -</h2>\n<script>\nfunction calc(){\n  const start = parseFloat(document.getElementById('start').value);\n  const goal = parseFloat(document.getElementById('end').value);\n  const out = document.getElementById('r');\n  if (!Number.isFinite(start) || !Number.isFinite(goal)) {\n    out.innerHTML = 'Enter numeric start and goal weights.';\n    return;\n  }\n  const diff = start - goal;\n  if (diff > 0) {\n    out.innerHTML = 'Weight to lose: ' + diff.toFixed(1) + ' (same units you entered)';\n  } else if (diff < 0) {\n    out.innerHTML = 'Goal is ' + (-diff).toFixed(1) + ' above start (same units)';\n  } else {\n    out.innerHTML = 'Start and goal are the same.';\n  }\n}\n</script>"
     },
     {
       "fileName": "roi-calculator.html",
@@ -665,12 +665,12 @@
       "marketId": "en",
       "category": "Career",
       "hubPath": "career-calculators.html",
-      "title": "Self-Employment Tax Calculator - Estimate SE Tax",
-      "description": "Estimate self-employment tax from net business income for freelancers and contractors.",
+      "title": "Self-Employment Tax Calculator - SE Tax on Net Earnings",
+      "description": "Estimate self-employment tax from net business income; optionally apply the IRS 92.35% net-earnings factor before your combined SE rate.",
       "h1": "Self-Employment Tax Calculator",
       "trustTopic": "self-employment tax calculator",
       "indexable": true,
-      "body": "<h1>Self-Employment Tax Calculator</h1>\n<p class=\"desc\">Estimate self-employment tax using net earnings assumptions.</p>\n<label for=\"income\">Net business income</label>\n<input id=\"income\" type=\"number\" step=\"any\" placeholder=\"65000\">\n<label for=\"seRate\">Self-employment tax rate (%)</label>\n<input id=\"seRate\" type=\"number\" step=\"any\" value=\"15.3\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const income = parseFloat(document.getElementById('income').value);\n  const seRate = parseFloat(document.getElementById('seRate').value) || 0;\n  if (!Number.isFinite(income) || income < 0) {\n    document.getElementById('result').innerHTML = 'Enter a valid income.';\n    return;\n  }\n  const tax = income * (seRate / 100);\n  document.getElementById('result').innerHTML = 'Estimated self-employment tax: $' + tax.toFixed(2);\n}\n</script>"
+      "body": "<h1>Self-Employment Tax Calculator</h1>\n<p class=\"desc\">Applies your combined Social Security + Medicare self-employment rate to a base you choose. Check the factor if your input is Schedule C net profit (typical Schedule SE path).</p>\n<label for=\"income\">Net business income</label>\n<input id=\"income\" type=\"number\" step=\"any\" placeholder=\"65000\">\n<label><input type=\"checkbox\" id=\"apply9235\" checked> Apply 92.35% net earnings factor before the rate</label>\n<label for=\"seRate\">Self-employment tax rate (%)</label>\n<input id=\"seRate\" type=\"number\" step=\"any\" value=\"15.3\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const income = parseFloat(document.getElementById('income').value);\n  const seRate = parseFloat(document.getElementById('seRate').value) || 0;\n  const apply9235 = document.getElementById('apply9235').checked;\n  if (!Number.isFinite(income) || income < 0) {\n    document.getElementById('result').innerHTML = 'Enter a valid income.';\n    return;\n  }\n  const base = apply9235 ? income * 0.9235 : income;\n  const tax = base * (seRate / 100);\n  document.getElementById('result').innerHTML = 'Estimated self-employment tax: $' + tax.toFixed(2);\n}\n</script>"
     },
     {
       "fileName": "freelance-tax-estimate-calculator.html",
@@ -693,12 +693,12 @@
       "marketId": "en",
       "category": "Career",
       "hubPath": "career-calculators.html",
-      "title": "Side Hustle Income Tax Calculator - Estimate Additional Tax Impact",
-      "description": "Estimate extra tax from side hustle income on top of your primary earnings.",
+      "title": "Side Hustle Income Tax Estimate (Free) – Flat Marginal Rate",
+      "description": "Rough extra income tax on side earnings using one marginal rate you choose—not a full return, brackets, or self-employment tax.",
       "h1": "Side Hustle Income Tax Calculator",
       "trustTopic": "side income tax calculator",
       "indexable": true,
-      "body": "<h1>Side Hustle Income Tax Calculator</h1>\n<p class=\"desc\">Estimate how side income may affect your annual tax bill.</p>\n<label for=\"sideIncome\">Annual side hustle income</label>\n<input id=\"sideIncome\" type=\"number\" step=\"any\" placeholder=\"18000\">\n<label for=\"taxRate\">Marginal tax estimate (%)</label>\n<input id=\"taxRate\" type=\"number\" step=\"any\" value=\"24\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const sideIncome = parseFloat(document.getElementById('sideIncome').value);\n  const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;\n  if (!Number.isFinite(sideIncome) || sideIncome < 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const extraTax = sideIncome * (taxRate / 100);\n  const netSideIncome = sideIncome - extraTax;\n  document.getElementById('result').innerHTML = 'Estimated extra tax: $' + extraTax.toFixed(2) + '<br>Estimated net side income: $' + netSideIncome.toFixed(2);\n}\n</script>"
+      "body": "<h1>Side Hustle Income Tax Calculator</h1>\n<p class=\"desc\">One rate × annual side income. Not bracket stacking, SE tax, or withholding.</p>\n<label for=\"sideIncome\">Annual side hustle income</label>\n<input id=\"sideIncome\" type=\"number\" step=\"any\" placeholder=\"18000\">\n<label for=\"taxRate\">Marginal tax estimate (%)</label>\n<input id=\"taxRate\" type=\"number\" step=\"any\" value=\"24\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const sideIncome = parseFloat(document.getElementById('sideIncome').value);\n  const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;\n  if (!Number.isFinite(sideIncome) || sideIncome < 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const extraTax = sideIncome * (taxRate / 100);\n  const netSideIncome = sideIncome - extraTax;\n  document.getElementById('result').innerHTML = 'Estimated extra tax: $' + extraTax.toFixed(2) + '<br>Estimated net side income: $' + netSideIncome.toFixed(2);\n}\n</script>"
     },
     {
       "fileName": "debt-snowball-calculator.html",
@@ -707,12 +707,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Debt Snowball Calculator - Estimate Debt-Free Timeline",
-      "description": "Estimate payoff time using debt snowball strategy assumptions with total balances and monthly payment budget.",
+      "title": "Debt Snowball-Style Payoff Estimate - Single Combined Balance",
+      "description": "Estimate months to pay off one combined debt balance at a constant monthly payment and average APR (not a multi-account snowball schedule).",
       "h1": "Debt Snowball Calculator",
       "trustTopic": "debt payoff strategy calculator",
       "indexable": true,
-      "body": "<h1>Debt Snowball Calculator</h1>\n<p class=\"desc\">Estimate payoff time by applying extra payment to the smallest balance first.</p>\n<label for=\"totalDebt\">Total debt balance</label>\n<input id=\"totalDebt\" type=\"number\" step=\"any\" placeholder=\"28000\">\n<label for=\"avgApr\">Average APR (%)</label>\n<input id=\"avgApr\" type=\"number\" step=\"any\" value=\"18\">\n<label for=\"monthly\">Monthly payment budget</label>\n<input id=\"monthly\" type=\"number\" step=\"any\" placeholder=\"900\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const totalDebt = parseFloat(document.getElementById('totalDebt').value);\n  const avgApr = parseFloat(document.getElementById('avgApr').value) || 0;\n  const monthly = parseFloat(document.getElementById('monthly').value);\n  if (!Number.isFinite(totalDebt) || !Number.isFinite(monthly) || totalDebt <= 0 || monthly <= 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const monthlyRate = avgApr / 100 / 12;\n  const interestMonth = totalDebt * monthlyRate;\n  const netPayment = monthly - interestMonth;\n  if (netPayment <= 0) {\n    document.getElementById('result').innerHTML = 'Monthly payment is too low to reduce debt.';\n    return;\n  }\n  const months = Math.log(monthly / (monthly - totalDebt * monthlyRate)) / Math.log(1 + monthlyRate);\n  document.getElementById('result').innerHTML = 'Estimated payoff time: ' + months.toFixed(1) + ' months';\n}\n</script>"
+      "body": "<h1>Debt Snowball Calculator</h1>\n<p class=\"desc\">Payoff-time math for <strong>one combined balance</strong> at your average APR and monthly payment. It does not order multiple debts smallest-first—use it as a quick single-loan estimate.</p>\n<label for=\"totalDebt\">Total debt balance</label>\n<input id=\"totalDebt\" type=\"number\" step=\"any\" placeholder=\"28000\">\n<label for=\"avgApr\">Average APR (%)</label>\n<input id=\"avgApr\" type=\"number\" step=\"any\" value=\"18\">\n<label for=\"monthly\">Monthly payment budget</label>\n<input id=\"monthly\" type=\"number\" step=\"any\" placeholder=\"900\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const totalDebt = parseFloat(document.getElementById('totalDebt').value);\n  const avgApr = parseFloat(document.getElementById('avgApr').value) || 0;\n  const monthly = parseFloat(document.getElementById('monthly').value);\n  if (!Number.isFinite(totalDebt) || !Number.isFinite(monthly) || totalDebt <= 0 || monthly <= 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const monthlyRate = avgApr / 100 / 12;\n  const interestMonth = totalDebt * monthlyRate;\n  const netPayment = monthly - interestMonth;\n  if (netPayment <= 0) {\n    document.getElementById('result').innerHTML = 'Monthly payment is too low to reduce debt.';\n    return;\n  }\n  const months = Math.log(monthly / (monthly - totalDebt * monthlyRate)) / Math.log(1 + monthlyRate);\n  document.getElementById('result').innerHTML = 'Estimated payoff time: ' + months.toFixed(1) + ' months';\n}\n</script>"
     },
     {
       "fileName": "debt-avalanche-calculator.html",
@@ -721,12 +721,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Debt Avalanche Calculator - Estimate Interest-Optimized Payoff",
-      "description": "Estimate debt payoff timeline when prioritizing highest-interest balances first.",
+      "title": "Debt Avalanche-Style Payoff Estimate - Single Combined Balance",
+      "description": "Estimate months to pay off one combined debt balance at a constant monthly payment and average APR (not a multi-account avalanche schedule).",
       "h1": "Debt Avalanche Calculator",
       "trustTopic": "debt payoff strategy calculator",
       "indexable": true,
-      "body": "<h1>Debt Avalanche Calculator</h1>\n<p class=\"desc\">Estimate payoff timeline by prioritizing highest-interest balances first.</p>\n<label for=\"totalDebt\">Total debt balance</label>\n<input id=\"totalDebt\" type=\"number\" step=\"any\" placeholder=\"28000\">\n<label for=\"avgApr\">Average APR (%)</label>\n<input id=\"avgApr\" type=\"number\" step=\"any\" value=\"18\">\n<label for=\"monthly\">Monthly payment budget</label>\n<input id=\"monthly\" type=\"number\" step=\"any\" placeholder=\"900\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const totalDebt = parseFloat(document.getElementById('totalDebt').value);\n  const avgApr = parseFloat(document.getElementById('avgApr').value) || 0;\n  const monthly = parseFloat(document.getElementById('monthly').value);\n  if (!Number.isFinite(totalDebt) || !Number.isFinite(monthly) || totalDebt <= 0 || monthly <= 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const monthlyRate = avgApr / 100 / 12;\n  const interestMonth = totalDebt * monthlyRate;\n  const netPayment = monthly - interestMonth;\n  if (netPayment <= 0) {\n    document.getElementById('result').innerHTML = 'Monthly payment is too low to reduce debt.';\n    return;\n  }\n  const months = Math.log(monthly / (monthly - totalDebt * monthlyRate)) / Math.log(1 + monthlyRate);\n  document.getElementById('result').innerHTML = 'Estimated payoff time: ' + months.toFixed(1) + ' months';\n}\n</script>"
+      "body": "<h1>Debt Avalanche Calculator</h1>\n<p class=\"desc\">Payoff-time math for <strong>one combined balance</strong> at your average APR and monthly payment. It does not route payments to highest-rate accounts first—use it as a quick single-loan estimate.</p>\n<label for=\"totalDebt\">Total debt balance</label>\n<input id=\"totalDebt\" type=\"number\" step=\"any\" placeholder=\"28000\">\n<label for=\"avgApr\">Average APR (%)</label>\n<input id=\"avgApr\" type=\"number\" step=\"any\" value=\"18\">\n<label for=\"monthly\">Monthly payment budget</label>\n<input id=\"monthly\" type=\"number\" step=\"any\" placeholder=\"900\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const totalDebt = parseFloat(document.getElementById('totalDebt').value);\n  const avgApr = parseFloat(document.getElementById('avgApr').value) || 0;\n  const monthly = parseFloat(document.getElementById('monthly').value);\n  if (!Number.isFinite(totalDebt) || !Number.isFinite(monthly) || totalDebt <= 0 || monthly <= 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const monthlyRate = avgApr / 100 / 12;\n  const interestMonth = totalDebt * monthlyRate;\n  const netPayment = monthly - interestMonth;\n  if (netPayment <= 0) {\n    document.getElementById('result').innerHTML = 'Monthly payment is too low to reduce debt.';\n    return;\n  }\n  const months = Math.log(monthly / (monthly - totalDebt * monthlyRate)) / Math.log(1 + monthlyRate);\n  document.getElementById('result').innerHTML = 'Estimated payoff time: ' + months.toFixed(1) + ' months';\n}\n</script>"
     },
     {
       "fileName": "extra-payment-loan-calculator.html",
@@ -740,7 +740,7 @@
       "h1": "Extra Payment Loan Calculator",
       "trustTopic": "loan repayment calculator",
       "indexable": true,
-      "body": "<h1>Extra Payment Loan Calculator</h1>\n<p class=\"desc\">Estimate time and interest savings from extra monthly loan payments.</p>\n<label for=\"balance\">Loan balance</label>\n<input id=\"balance\" type=\"number\" step=\"any\" placeholder=\"220000\">\n<label for=\"rate\">Annual interest rate (%)</label>\n<input id=\"rate\" type=\"number\" step=\"any\" value=\"6.5\">\n<label for=\"years\">Remaining term (years)</label>\n<input id=\"years\" type=\"number\" step=\"any\" value=\"25\">\n<label for=\"extra\">Extra payment per month</label>\n<input id=\"extra\" type=\"number\" step=\"any\" value=\"200\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction payment(principal, annualRate, years){\n  const r = annualRate / 100 / 12;\n  const n = years * 12;\n  if (r === 0) return principal / n;\n  return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);\n}\nfunction calc(){\n  const balance = parseFloat(document.getElementById('balance').value);\n  const rate = parseFloat(document.getElementById('rate').value);\n  const years = parseFloat(document.getElementById('years').value);\n  const extra = parseFloat(document.getElementById('extra').value) || 0;\n  if (!Number.isFinite(balance) || !Number.isFinite(rate) || !Number.isFinite(years) || balance <= 0 || years <= 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const base = payment(balance, rate, years);\n  const newPay = base + extra;\n  const monthlyRate = rate / 100 / 12;\n  const monthsBase = years * 12;\n  if (newPay <= balance * monthlyRate) {\n    document.getElementById('result').innerHTML = 'Extra payment is too low to change payoff.';\n    return;\n  }\n  const monthsNew = Math.log(newPay / (newPay - balance * monthlyRate)) / Math.log(1 + monthlyRate);\n  const savedMonths = monthsBase - monthsNew;\n  document.getElementById('result').innerHTML = 'Base payment: $' + base.toFixed(2) + '<br>New payment: $' + newPay.toFixed(2) + '<br>Estimated time saved: ' + Math.max(0, savedMonths).toFixed(1) + ' months';\n}\n</script>"
+      "body": "<h1>Extra Payment Loan Calculator</h1>\n<p class=\"desc\">Compare baseline amortization to paying extra each month. Interest totals sum monthly interest until the balance is paid.</p>\n<label for=\"balance\">Loan balance</label>\n<input id=\"balance\" type=\"number\" step=\"any\" placeholder=\"220000\">\n<label for=\"rate\">Annual interest rate (%)</label>\n<input id=\"rate\" type=\"number\" step=\"any\" value=\"6.5\">\n<label for=\"years\">Remaining term (years)</label>\n<input id=\"years\" type=\"number\" step=\"any\" value=\"25\">\n<label for=\"extra\">Extra payment per month</label>\n<input id=\"extra\" type=\"number\" step=\"any\" value=\"200\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction payment(principal, annualRate, years){\n  const r = annualRate / 100 / 12;\n  const n = years * 12;\n  if (r === 0) return principal / n;\n  return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);\n}\nfunction interestUntilZero(balance, monthlyPay, monthlyRate, maxMonths) {\n  let bal = balance;\n  let totalInt = 0;\n  let m = 0;\n  if (monthlyRate <= 0) {\n    const months = Math.ceil(bal / monthlyPay);\n    return { totalInt: 0, months: months, ok: true };\n  }\n  while (bal > 0.005 && m < maxMonths) {\n    const intPart = bal * monthlyRate;\n    if (monthlyPay <= intPart + 1e-12) {\n      return { totalInt: null, months: m, ok: false };\n    }\n    totalInt += intPart;\n    bal -= monthlyPay - intPart;\n    m++;\n  }\n  return { totalInt, months: m, ok: true };\n}\nfunction calc(){\n  const balance = parseFloat(document.getElementById('balance').value);\n  const rate = parseFloat(document.getElementById('rate').value);\n  const years = parseFloat(document.getElementById('years').value);\n  const extra = parseFloat(document.getElementById('extra').value) || 0;\n  const out = document.getElementById('result');\n  if (!Number.isFinite(balance) || !Number.isFinite(rate) || !Number.isFinite(years) || balance <= 0 || years <= 0) {\n    out.innerHTML = 'Enter valid values.';\n    return;\n  }\n  const base = payment(balance, rate, years);\n  const newPay = base + extra;\n  const monthlyRate = rate / 100 / 12;\n  const monthsBase = Math.round(years * 12);\n  const baseSim = interestUntilZero(balance, base, monthlyRate, monthsBase + 1);\n  if (!baseSim.ok) {\n    out.innerHTML = 'Payment is too low to amortize this loan.';\n    return;\n  }\n  const newSim = interestUntilZero(balance, newPay, monthlyRate, 600);\n  if (!newSim.ok) {\n    out.innerHTML = 'Extra payment is too low to reduce payoff.';\n    return;\n  }\n  const savedMonths = monthsBase - newSim.months;\n  const savedInterest = baseSim.totalInt - newSim.totalInt;\n  out.innerHTML = 'Base payment: $' + base.toFixed(2) + '<br>New payment: $' + newPay.toFixed(2) + '<br>Estimated time saved: ' + Math.max(0, savedMonths).toFixed(1) + ' months<br>Estimated interest saved: $' + Math.max(0, savedInterest).toFixed(2);\n}\n</script>"
     },
     {
       "fileName": "mortgage-affordability-calculator.html",
@@ -749,12 +749,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "Mortgage Affordability Calculator - Estimate Home Price Range",
-      "description": "Estimate affordable mortgage payment and home price range based on income, debts, and down payment.",
+      "title": "Mortgage Affordability Calculator - Payment, Loan, and Price Hint",
+      "description": "Estimate max housing payment and loan size from income, debts, and DTI; optional down payment % suggests a purchase price (PITI and PMI not modeled).",
       "h1": "Mortgage Affordability Calculator",
       "trustTopic": "mortgage affordability calculator",
       "indexable": true,
-      "body": "<h1>Mortgage Affordability Calculator</h1>\n<p class=\"desc\">Estimate affordable monthly housing payment and rough loan size.</p>\n<label for=\"income\">Gross monthly income</label>\n<input id=\"income\" type=\"number\" step=\"any\" placeholder=\"8000\">\n<label for=\"debts\">Monthly debt payments</label>\n<input id=\"debts\" type=\"number\" step=\"any\" value=\"900\">\n<label for=\"targetDti\">Target DTI limit (%)</label>\n<input id=\"targetDti\" type=\"number\" step=\"any\" value=\"36\">\n<label for=\"rate\">Estimated mortgage rate (%)</label>\n<input id=\"rate\" type=\"number\" step=\"any\" value=\"6.5\">\n<label for=\"years\">Loan term (years)</label>\n<input id=\"years\" type=\"number\" step=\"any\" value=\"30\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const income = parseFloat(document.getElementById('income').value);\n  const debts = parseFloat(document.getElementById('debts').value) || 0;\n  const targetDti = parseFloat(document.getElementById('targetDti').value) || 0;\n  const rate = parseFloat(document.getElementById('rate').value) || 0;\n  const years = parseFloat(document.getElementById('years').value) || 30;\n  if (!Number.isFinite(income) || income <= 0 || targetDti <= 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const maxHousing = (income * (targetDti / 100)) - debts;\n  if (maxHousing <= 0) {\n    document.getElementById('result').innerHTML = 'Current debts leave no room under the selected DTI.';\n    return;\n  }\n  const r = rate / 100 / 12;\n  const n = years * 12;\n  const loan = r === 0 ? maxHousing * n : maxHousing * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));\n  document.getElementById('result').innerHTML = 'Estimated max housing payment: $' + maxHousing.toFixed(2) + '<br>Approx loan amount: $' + loan.toFixed(2);\n}\n</script>"
+      "body": "<h1>Mortgage Affordability Calculator</h1>\n<p class=\"desc\">DTI cap → max mortgage-style payment → loan principal from rate/term. Optional down payment % gives a rough purchase price = loan ÷ (1 − down%). Does not include taxes, insurance, or PMI in the payment.</p>\n<label for=\"income\">Gross monthly income</label>\n<input id=\"income\" type=\"number\" step=\"any\" placeholder=\"8000\">\n<label for=\"debts\">Monthly debt payments</label>\n<input id=\"debts\" type=\"number\" step=\"any\" value=\"900\">\n<label for=\"targetDti\">Target DTI limit (%)</label>\n<input id=\"targetDti\" type=\"number\" step=\"any\" value=\"36\">\n<label for=\"rate\">Estimated mortgage rate (%)</label>\n<input id=\"rate\" type=\"number\" step=\"any\" value=\"6.5\">\n<label for=\"years\">Loan term (years)</label>\n<input id=\"years\" type=\"number\" step=\"any\" value=\"30\">\n<label for=\"downPct\">Down payment (% of purchase price, optional)</label>\n<input id=\"downPct\" type=\"number\" step=\"any\" value=\"20\" placeholder=\"e.g. 20\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const income = parseFloat(document.getElementById('income').value);\n  const debts = parseFloat(document.getElementById('debts').value) || 0;\n  const targetDti = parseFloat(document.getElementById('targetDti').value) || 0;\n  const rate = parseFloat(document.getElementById('rate').value) || 0;\n  const years = parseFloat(document.getElementById('years').value) || 30;\n  const downPct = parseFloat(document.getElementById('downPct').value);\n  const out = document.getElementById('result');\n  if (!Number.isFinite(income) || income <= 0 || targetDti <= 0) {\n    out.innerHTML = 'Enter valid values.';\n    return;\n  }\n  const maxHousing = (income * (targetDti / 100)) - debts;\n  if (maxHousing <= 0) {\n    out.innerHTML = 'Current debts leave no room under the selected DTI.';\n    return;\n  }\n  const r = rate / 100 / 12;\n  const n = years * 12;\n  const loan = r === 0 ? maxHousing * n : maxHousing * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));\n  let html = 'Estimated max housing payment: $' + maxHousing.toFixed(2) + '<br>Approx loan amount: $' + loan.toFixed(2);\n  if (Number.isFinite(downPct) && downPct > 0 && downPct < 100) {\n    const price = loan / (1 - downPct / 100);\n    html += '<br>Approx purchase price if ' + downPct.toFixed(1) + '% down: $' + price.toFixed(2);\n  }\n  out.innerHTML = html;\n}\n</script>"
     },
     {
       "fileName": "closing-cost-calculator.html",

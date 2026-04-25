@@ -24,18 +24,47 @@
 <div class="card">
 <h1>Calculadora de Porcentaje</h1>
 <p class="desc">Calcula un valor a partir de un porcentaje o descubre qué porcentaje representa un valor sobre otro.</p>
-<label for="valorA">Valor A:</label>
+<label for="modo">Modo:</label>
+<select id="modo">
+<option value="parte">Hallar un valor (X% de Y)</option>
+<option value="porcentaje">Hallar porcentaje (A es qué % de B)</option>
+</select><br><br>
+<label for="valorA" id="labelA">Porcentaje (%):</label>
 <input type="number" id="valorA" step="any"><br><br>
-<label for="valorB">Valor B:</label>
+<label for="valorB" id="labelB">Valor total (base):</label>
 <input type="number" id="valorB" step="any"><br><br>
 <button onclick="calcular()">Calcular</button>
 <h2 id="result" class="result">Resultado: -</h2>
 <script>
+function sincronizarEtiquetas() {
+  const modo = document.getElementById("modo").value;
+  const la = document.getElementById("labelA");
+  const lb = document.getElementById("labelB");
+  if (modo === "parte") {
+    la.textContent = "Porcentaje (%):";
+    lb.textContent = "Valor total (base):";
+  } else {
+    la.textContent = "Parte (A):";
+    lb.textContent = "Total (B):";
+  }
+}
+document.getElementById("modo").addEventListener("change", sincronizarEtiquetas);
+sincronizarEtiquetas();
 function calcular() {
-  const a = parseFloat(document.getElementById("valorA").value) || 0;
-  const b = parseFloat(document.getElementById("valorB").value) || 0;
-  if (b === 0) {
+  const modo = document.getElementById("modo").value;
+  const a = parseFloat(document.getElementById("valorA").value);
+  const b = parseFloat(document.getElementById("valorB").value);
+  if (!Number.isFinite(a) || !Number.isFinite(b)) {
     document.getElementById("result").textContent = "Ingresa valores válidos.";
+    return;
+  }
+  if (modo === "parte") {
+    const out = b * (a / 100);
+    document.getElementById("result").textContent = a.toFixed(2) + "% de " + b.toFixed(2) + " = " + out.toFixed(2);
+    return;
+  }
+  if (b === 0) {
+    document.getElementById("result").textContent = "El total (B) no puede ser 0.";
     return;
   }
   const p = (a / b) * 100;
@@ -47,12 +76,12 @@ function calcular() {
 <div>
 <h3>Qué significa cada dato</h3>
 <ul>
-<li><strong>Valor A</strong> — El numerador en la comparación.</li>
-<li><strong>Valor B</strong> — El valor base (denominador).</li>
+<li><strong>Modo “Hallar un valor”</strong> — Ingresa un porcentaje y un total; el resultado es <em>total × (porcentaje ÷ 100)</em>.</li>
+<li><strong>Modo “Hallar porcentaje”</strong> — Ingresa la parte (A) y el total (B); el resultado es <em>(A ÷ B) × 100</em> como “A es p% de B”. Si <strong>B es 0</strong>, se muestra un aviso.</li>
 </ul>
 <h3>Fórmula</h3>
-<p>Se calcula <em>p = (A ÷ B) × 100</em> y se muestra como “A es p% de B”. Si <strong>B es 0</strong>, se muestra un aviso en lugar de dividir.</p>
-<p class="small">Valores no numéricos se tratan como 0 al leer los campos.</p>
+<p>En modo valor: <em>resultado = base × (porcentaje ÷ 100)</em>. En modo porcentaje: <em>p = (A ÷ B) × 100</em>.</p>
+<p class="small">Los campos vacíos o no numéricos no son válidos hasta que ingreses números.</p>
 </div>
 </details>
 <div class="trust-block">

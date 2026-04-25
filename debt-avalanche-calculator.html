@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="debt-avalanche-calculator.html">
 <head>
-<title>Debt Avalanche Calculator - Estimate Interest-Optimized Payoff</title>
-<meta name="description" content="Estimate debt payoff timeline when prioritizing highest-interest balances first.">
+<title>Debt Avalanche-Style Payoff Estimate - Single Combined Balance</title>
+<meta name="description" content="Estimate months to pay off one combined debt balance at a constant monthly payment and average APR (not a multi-account avalanche schedule).">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/debt-avalanche-calculator.html">
@@ -23,7 +23,7 @@
 <div class="wrap">
 <div class="card">
 <h1>Debt Avalanche Calculator</h1>
-<p class="desc">Estimate payoff timeline by prioritizing highest-interest balances first.</p>
+<p class="desc">Payoff-time math for <strong>one combined balance</strong> at your average APR and monthly payment. It does not route payments to highest-rate accounts first—use it as a quick single-loan estimate.</p>
 <label for="totalDebt">Total debt balance</label>
 <input id="totalDebt" type="number" step="any" placeholder="28000">
 <label for="avgApr">Average APR (%)</label>
@@ -57,13 +57,13 @@ function calc(){
 <div>
 <h3>What each input means</h3>
 <ul>
-<li><strong>Total debt balance</strong> — Single combined balance the tool treats as one loan (strategy label is informational).</li>
+<li><strong>Total debt balance</strong> — One combined principal modeled as a single amortizing loan (the “avalanche” label describes the strategy concept, not per-account ordering in this tool).</li>
 <li><strong>Average APR (%)</strong> — Converted to monthly rate <em>r = APR ÷ 100 ÷ 12</em>.</li>
 <li><strong>Monthly payment budget</strong> — Constant payment applied each month.</li>
 </ul>
 <h3>Formula used</h3>
 <p>Uses the standard amortization payoff-time solve for one balance: months from <em>log</em> formula on payment, rate, and principal (same numeric model as the snowball page on this site).</p>
-<p class="small">Does not reorder multiple debts; use it as a quick single-balance illustration, not a full avalanche schedule.</p>
+<p class="small">Does not reorder multiple debts or allocate payments across accounts—use it as a quick single-balance payoff-time estimate.</p>
 </div>
 </details>
 <div class="trust-block">

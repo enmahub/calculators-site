@@ -671,16 +671,19 @@ function faqItemsForEntry(entry) {
   if (entry.family === "statePaycheckPilotPage") {
     return [
       {
-        question: "How is federal tax estimated?",
-        answer: "Federal tax uses progressive IRS-style brackets and standard deduction assumptions by filing status."
+        question: "Does this estimate include Social Security and Medicare (FICA)?",
+        answer:
+          "No. This tool only subtracts estimated federal income tax and a simple flat state income tax assumption from gross. Real paychecks also withhold FICA, may include local taxes, and depend on your W-4 and benefits."
       },
       {
-        question: "Does this include every local tax rule?",
-        answer: "No. Local taxes, pre-tax benefits, and special cases may change take-home pay."
+        question: "Why is state tax shown as a flat percent?",
+        answer:
+          "These state pages use a single transparent percentage on gross as a planning shortcut—not a full state tax return, credits, or local add-ons."
       },
       {
-        question: "Can I use this as my exact paycheck amount?",
-        answer: "Use it as a planning estimate and compare with your payroll provider for exact numbers."
+        question: "How should I use the monthly or biweekly numbers?",
+        answer:
+          "Treat them as rough splits of the estimated annual net after the modeled taxes only. Compare with your pay stub or payroll provider for withholding-accurate amounts."
       }
     ];
   }
@@ -703,6 +706,44 @@ function faqItemsForEntry(entry) {
           question: "When should I use this?",
           answer:
             "For quick comparisons when you already have a ballpark for upfront costs and want a simple yearly figure. For borrowing decisions, rely on your lender’s official disclosures and qualified professionals."
+        }
+      ];
+    }
+    if (legacyKey === "ovulation-calculator.html") {
+      return [
+        {
+          question: "Is this ovulation date medically exact?",
+          answer:
+            "No. It uses a simple calendar rule (about 14 days before your next expected period) and is for general planning only—not diagnosis, treatment, or contraception timing."
+        },
+        {
+          question: "What is the fertile window shown here?",
+          answer:
+            "It is a rough range around the estimated ovulation date (about two days before through two days after). Real fertility varies by person and cycle."
+        },
+        {
+          question: "Should I use this instead of talking to a clinician?",
+          answer:
+            "For health decisions, use professional guidance and not this calculator alone."
+        }
+      ];
+    }
+    if (legacyKey === "weight-loss-calculator.html") {
+      return [
+        {
+          question: "Does this measure body fat loss?",
+          answer:
+            "No. It only subtracts your goal weight from your start weight in the units you enter. It does not estimate fat mass, muscle change, or health risk."
+        },
+        {
+          question: "What if my goal weight is higher than my start weight?",
+          answer:
+            "The result is a negative number (weight gain in the same units). The tool is a numeric difference only—not a diet or treatment plan."
+        },
+        {
+          question: "Can I use this for medical decisions?",
+          answer:
+            "No. It is for quick illustration only. For nutrition or medical goals, consult a qualified professional."
         }
       ];
     }
@@ -1399,6 +1440,56 @@ function calcular() {
 </script>`;
   }
 
+  if (formulaType === "percentage") {
+    return `<label for="modo">Modo:</label>
+<select id="modo">
+<option value="parte">Hallar un valor (X% de Y)</option>
+<option value="porcentaje">Hallar porcentaje (A es qué % de B)</option>
+</select><br><br>
+<label for="valorA" id="labelA">Porcentaje (%):</label>
+<input type="number" id="valorA" step="any"><br><br>
+<label for="valorB" id="labelB">Valor total (base):</label>
+<input type="number" id="valorB" step="any"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Resultado: -</h2>
+<script>
+function sincronizarEtiquetas() {
+  const modo = document.getElementById("modo").value;
+  const la = document.getElementById("labelA");
+  const lb = document.getElementById("labelB");
+  if (modo === "parte") {
+    la.textContent = "Porcentaje (%):";
+    lb.textContent = "Valor total (base):";
+  } else {
+    la.textContent = "Parte (A):";
+    lb.textContent = "Total (B):";
+  }
+}
+document.getElementById("modo").addEventListener("change", sincronizarEtiquetas);
+sincronizarEtiquetas();
+function calcular() {
+  const modo = document.getElementById("modo").value;
+  const a = parseFloat(document.getElementById("valorA").value);
+  const b = parseFloat(document.getElementById("valorB").value);
+  if (!Number.isFinite(a) || !Number.isFinite(b)) {
+    document.getElementById("result").textContent = "Ingresa valores válidos.";
+    return;
+  }
+  if (modo === "parte") {
+    const out = b * (a / 100);
+    document.getElementById("result").textContent = a.toFixed(2) + "% de " + b.toFixed(2) + " = " + out.toFixed(2);
+    return;
+  }
+  if (b === 0) {
+    document.getElementById("result").textContent = "El total (B) no puede ser 0.";
+    return;
+  }
+  const p = (a / b) * 100;
+  document.getElementById("result").textContent = a.toFixed(2) + " es " + p.toFixed(2) + "% de " + b.toFixed(2);
+}
+</script>`;
+  }
+
   return `<label for="valorA">Valor A:</label>
 <input type="number" id="valorA" step="any"><br><br>
 <label for="valorB">Valor B:</label>
@@ -1449,7 +1540,7 @@ function statePaycheckTemplate(entry, entries) {
     robotsDirective: "index, follow",
     canonicalPath: entry.pagePath,
     body: `<h1>${entry.h1}</h1>
-<p class="desc">Estimate paycheck outcomes for ${entry.stateName} using IRS-style progressive federal brackets and a transparent state tax assumption (${(entry.stateTaxRate * 100).toFixed(1)}%).</p>
+<p class="desc">Planning-only estimate: federal income tax (IRS-style brackets + standard deduction) plus a flat <strong>${(entry.stateTaxRate * 100).toFixed(1)}%</strong> state income tax on gross for ${entry.stateName}. <strong>Excludes FICA (Social Security and Medicare),</strong> local taxes, and paycheck deductions—compare with your actual pay stub.</p>
 <label for="salary">Annual Gross Salary ($):</label>
 <input type="number" id="salary" value="70000"><br><br>
 <label for="year">Federal Tax Year:</label>
@@ -1706,8 +1797,8 @@ function buildEntries() {
       fileName,
       pagePath: normalizePath(`us/${stateCode}/${fileName}`),
       hubPath: "financial-calculators.html",
-      title: `${stateName} Paycheck Calculator (Estimate)`,
-      description: `Estimate paycheck amounts in ${stateName} using gross salary and a state tax assumption.`,
+      title: `${stateName} Net Pay Estimate (Federal + State Income Tax Only)`,
+      description: `Rough annual take-home after estimated federal income tax and a flat ${stateName} state income tax assumption—does not include FICA, local taxes, or pre-tax deductions.`,
       h1: `${stateName} Paycheck Calculator`,
       stateName,
       stateCode,
